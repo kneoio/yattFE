@@ -28,7 +28,8 @@ export default class TaskView extends React.Component {
     constructor(props) {
         super(props);
         this.state = { count: props.initialCount };
-        [this.selected, this.setSelected] = React.useState([]);
+        this.selected = 0;
+        this.state.rows = {};
 
         this.rows = [
             createData('Cupcake', 305, 3.7, 67, 4.3),
@@ -187,28 +188,11 @@ const EnhancedTableHead = props => {
                         checked={rowCount > 0 && numSelected === rowCount}
                         onChange={onSelectAllClick}
                         inputProps={{ 'aria-label': 'select all desserts' }}
-                    />
+                    /> 
                 </TableCell>
-                {this.headCells.map(headCell => (
-                    <TableCell
-                        key={headCell.id}
-                        align={headCell.numeric ? 'right' : 'left'}
-                        padding={headCell.disablePadding ? 'none' : 'default'}
-                        sortDirection={orderBy === headCell.id ? order : false}
-                    >
-                        <TableSortLabel
-                            active={orderBy === headCell.id}
-                            direction={orderBy === headCell.id ? order : 'asc'}
-                            onClick={createSortHandler(headCell.id)}
-                        >
-                            {headCell.label}
-                            {orderBy === headCell.id ? (
-                                <span className={classes.visuallyHidden}>
-                                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                                </span>
-                            ) : null}
-                        </TableSortLabel>
-                    </TableCell>
+                <TableCell padding="checkbox">
+                    defew
+                </TableCell>
                 ))}
             </TableRow>
         </TableHead>
