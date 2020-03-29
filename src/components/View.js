@@ -16,12 +16,9 @@ import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import Button from '@material-ui/core/Button';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import axios from 'axios';
+
 
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
@@ -281,7 +278,6 @@ export default function EnhancedTable() {
       <Paper className={classes.paper}>      
         <EnhancedTableToolbar numSelected={selected.length} />
         <TableContainer>
-        <Button color="primary" onClick={submitHandler}>ipoiopi</Button>
           <Table
             className={classes.table}
             aria-labelledby="tableTitle"
