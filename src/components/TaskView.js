@@ -12,6 +12,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import Link from "@material-ui/core/Link";
+import {makeStyles} from "@material-ui/core/styles";
 
 class TaskView extends React.Component {
 
@@ -22,6 +23,16 @@ class TaskView extends React.Component {
             pageSize: 20,
             page: 1
         };
+
+        let drawerWidth = 240;
+
+        this.classes = makeStyles((theme) => ({
+            content: {
+                flexGrow: 1,
+                backgroundColor: theme.palette.background.default,
+                padding: theme.spacing(3),
+            },
+        }));
         this.render = this.render.bind(this);
         this.handleChangePage = this.handleChangePage.bind(this);
     }
@@ -53,7 +64,7 @@ class TaskView extends React.Component {
         let viewPage = this.props.tasks.serverPage.viewPage;
         let rows = viewPage.result;
         return <div>
-            <TableContainer component={Paper}>
+            <TableContainer>
                 <TablePagination
                     rowsPerPageOptions={[20, 50, 100, {value: -1, label: 'All'}]}
                     count={viewPage.count}

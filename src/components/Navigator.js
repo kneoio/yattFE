@@ -1,157 +1,87 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import AppBar from '@material-ui/core/AppBar';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Divider from '@material-ui/core/Divider';
-import Drawer from '@material-ui/core/Drawer';
-import Hidden from '@material-ui/core/Hidden';
-import IconButton from '@material-ui/core/IconButton';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import MailIcon from '@material-ui/icons/Mail';
-import MenuIcon from '@material-ui/icons/Menu';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import TaskView from "./TaskView";
+import React, {Component} from 'react';
+import {ListItemIcon, ListItemText, Divider, IconButton, MenuList, MenuItem, Drawer} from '@material-ui/core';
+import {Link, withRouter} from 'react-router-dom';
+import {makeStyles} from '@material-ui/core/styles';
+import routes from './Routes';
+import CssBaseline from "@material-ui/core/CssBaseline";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import List from "@material-ui/core/List";
 
 
-const drawerWidth = 240;
+export class Navigator extends Component {
+    constructor(props) {
+        super(props);
+        const drawerWidth = 240;
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-  },
-  drawer: {
-    [theme.breakpoints.up('sm')]: {
-      width: drawerWidth,
-      flexShrink: 0,
-    },
-  },
-  appBar: {
-    [theme.breakpoints.up('sm')]: {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth,
-    },
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-    [theme.breakpoints.up('sm')]: {
-      display: 'none',
-    },
-  },
-  // necessary for content to be below app bar
-  toolbar: theme.mixins.toolbar,
-  drawerPaper: {
-    width: drawerWidth,
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-  },
-}));
+        this.classes = makeStyles((theme) => ({
+            root: {
+                display: 'flex',
+            },
+            appBar: {
+                width: `calc(100% - ${drawerWidth}px)`,
+                marginLeft: drawerWidth,
+            },
+            drawer: {
+                width: drawerWidth,
+                flexShrink: 0,
+            },
+            drawerPaper: {
+                width: drawerWidth,
+            },
+            // necessary for content to be below app bar
+            toolbar: theme.mixins.toolbar,
+            content: {
+                flexGrow: 1,
+                backgroundColor: theme.palette.background.default,
+                padding: theme.spacing(3),
+            },
+        }));
+        this.activeRoute = this.activeRoute.bind(this);
+    }
 
-function ResponsiveDrawer(props) {
-  const { container } = props;
-  const classes = useStyles();
-  const theme = useTheme();
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+    activeRoute(routeName) {
+        return this.props.location.pathname.indexOf(routeName) > -1 ? true : false;
+    }
 
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
-
-  const drawer = (
-      <div>
-        <div className={classes.toolbar} />
-        <Divider />
-        <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-          ))}
-        </List>
-      </div>
-  );
-
-  return (
-      <div className={classes.root}>
-        <CssBaseline />
-        <AppBar position="fixed" className={classes.appBar}>
-          <Toolbar>
-            <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                edge="start"
-                onClick={handleDrawerToggle}
-                className={classes.menuButton}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" noWrap>
-              Yatt
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <nav className={classes.drawer} aria-label="mailbox folders">
-          {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-          <Hidden smUp implementation="css">
-            <Drawer
-                container={container}
-                variant="temporary"
-                anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-                open={mobileOpen}
-                onClose={handleDrawerToggle}
-                classes={{
-                  paper: classes.drawerPaper,
-                }}
-                ModalProps={{
-                  keepMounted: true, // Better open performance on mobile.
-                }}
-            >
-              {drawer}
-            </Drawer>
-          </Hidden>
-          <Hidden xsDown implementation="css">
-            <Drawer
-                classes={{
-                  paper: classes.drawerPaper,
-                }}
-                variant="permanent"
-                open
-            >
-              {drawer}
-            </Drawer>
-          </Hidden>
-        </nav>
-        <main className={classes.content}>
-          <div className={classes.toolbar} />
-            <TaskView/>
-        </main>
-      </div>
-  );
+    render() {
+        return (
+            <div className={this.classes.root}>
+                {/*<CssBaseline/>
+                <AppBar position="fixed" className={this.classes.appBar}>
+                    <Toolbar>
+                        <Typography variant="h6" noWrap>
+                            Permanent drawer
+                        </Typography>
+                    </Toolbar>
+                </AppBar>*/}
+                <Drawer variant="permanent"
+                        className={this.classes.drawer}
+                        classes={{
+                            paper: this.classes.drawerPaper,
+                        }}
+                        anchor="left">
+                    <div className={this.classes.toolbar} />
+                    <Divider/>
+                    <List>
+                        {routes.map((prop, key) => {
+                            return (
+                                <Link to={prop.path} style={{textDecoration: 'none'}} key={key}>
+                                    <MenuItem selected={this.activeRoute(prop.path)}>
+                                        <ListItemIcon>
+                                            <prop.icon/>
+                                        </ListItemIcon>
+                                        <ListItemText primary={prop.sidebarName}/>
+                                    </MenuItem>
+                                </Link>
+                            );
+                        })}
+                    </List>
+                </Drawer>
+            </div>
+        );
+    }
 }
 
-ResponsiveDrawer.propTypes = {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * You won't need it on your project.
-   */
-  container: PropTypes.any,
-};
-
-export default ResponsiveDrawer;
+export default withRouter(Navigator);
