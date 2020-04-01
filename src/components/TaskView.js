@@ -4,7 +4,6 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 import {fetchTasks} from "../store/task/actions";
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
@@ -12,7 +11,6 @@ import Checkbox from "@material-ui/core/Checkbox";
 import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import Link from "@material-ui/core/Link";
-import {makeStyles} from "@material-ui/core/styles";
 
 class TaskView extends React.Component {
 
@@ -23,17 +21,6 @@ class TaskView extends React.Component {
             pageSize: 20,
             page: 1
         };
-
-        let drawerWidth = 240;
-
-        this.classes = makeStyles((theme) => ({
-            content: {
-                flexGrow: 1,
-                backgroundColor: theme.palette.background.default,
-                padding: theme.spacing(3),
-            },
-        }));
-        this.render = this.render.bind(this);
         this.handleChangePage = this.handleChangePage.bind(this);
     }
 
@@ -63,7 +50,7 @@ class TaskView extends React.Component {
     render() {
         let viewPage = this.props.tasks.serverPage.viewPage;
         let rows = viewPage.result;
-        return <div style={{marginLeft:200, marginTop:50}}>
+        return <div>
             <TableContainer >
                 <TablePagination
                     rowsPerPageOptions={[20, 50, 100, {value: -1, label: 'All'}]}

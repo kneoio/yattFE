@@ -9,18 +9,16 @@ import {
     Route,
     Link
 } from "react-router-dom";
-import TaskView from "./components/TaskView";
-import SimpleTable from "./components/SimpleTable";
-import ProfilePage from "./components/ProfilePage";
-import {makeStyles} from "@material-ui/core/styles";
 import Outline from './components/Outline'
+import {BrowserRouter} from "react-router-dom/modules";
 
 function App() {
     return (
         <Provider store={store}>
-            <Router>
+            <BrowserRouter>
                 <div className="App">
-                    <Outline/>
+                    <Route path="/" component={Outline}/>
+                    {/*<Outline/>*/}
                     {/*<Switch>
                         <Route path="/home">
                             <Navigator/>
@@ -36,7 +34,7 @@ function App() {
                         </Route>
                     </Switch>*/}
                 </div>
-            </Router>
+            </BrowserRouter>
         </Provider>
     );
 }
