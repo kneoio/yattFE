@@ -1,5 +1,5 @@
 import { Home, ContentPaste, Notifications, AccountCircle } from '@material-ui/icons';
-import HomePage from './HomePage';
+import Error from './Error';
 import ProfilePage from './ProfilePage';
 
 const Routes = [
@@ -8,7 +8,7 @@ const Routes = [
         sidebarName: 'Home',
         navbarName: 'Home',
         icon: Home,
-        component: HomePage
+        component: Error
     },
     {
         path: '/profile',

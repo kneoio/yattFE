@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Profiler} from 'react';
 import './App.css';
 import {Provider} from 'react-redux';
 import store from './store/store.js';
@@ -10,31 +10,22 @@ import {
     Link
 } from "react-router-dom";
 import Outline from './components/Outline'
-import {BrowserRouter} from "react-router-dom/modules";
+import ProfilePage from "./components/ProfilePage";
+import Error from "./components/Error";
+
 
 function App() {
     return (
         <Provider store={store}>
-            <BrowserRouter>
+            <Router>
                 <div className="App">
-                    <Route path="/" component={Outline}/>
-                    {/*<Outline/>*/}
-                    {/*<Switch>
-                        <Route path="/home">
-                            <Navigator/>
-                            <TaskView/>
-                        </Route>
-                        <Route path="/Starred">
-                            <Navigator/>
-                            <ProfilePage/>
-                        </Route>
-                        <Route path="/">
-                            <Navigator/>
-                            <SimpleTable/>
-                        </Route>
-                    </Switch>*/}
+                    <Switch>
+                        <Route path="/" exact component={Outline}/>
+                        <Route path="/about" exact component={ProfilePage}/>
+                        <Route path="/" component={ Error}/>
+                    </Switch>
                 </div>
-            </BrowserRouter>
+            </Router>
         </Provider>
     );
 }
