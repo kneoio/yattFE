@@ -48,23 +48,24 @@ export class Navigator extends Component {
     render() {
         return (
             <div className={this.classes.root}>
-                {/*<CssBaseline/>
+                <CssBaseline/>
                 <AppBar position="fixed" className={this.classes.appBar}>
                     <Toolbar>
                         <Typography variant="h6" noWrap>
                             Permanent drawer
                         </Typography>
                     </Toolbar>
-                </AppBar>*/}
+                </AppBar>
                 <Drawer variant="permanent"
                         className={this.classes.drawer}
                         classes={{
                             paper: this.classes.drawerPaper,
+
                         }}
                         anchor="left">
                     <div className={this.classes.toolbar} />
                     <Divider/>
-                    <List>
+                    <List style={{width:200}}>
                         {routes.map((prop, key) => {
                             return (
                                 <Link to={prop.path} style={{textDecoration: 'none'}} key={key}>

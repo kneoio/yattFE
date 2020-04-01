@@ -63,8 +63,8 @@ class TaskView extends React.Component {
     render() {
         let viewPage = this.props.tasks.serverPage.viewPage;
         let rows = viewPage.result;
-        return <div>
-            <TableContainer>
+        return <div style={{marginLeft:200, marginTop:50}}>
+            <TableContainer >
                 <TablePagination
                     rowsPerPageOptions={[20, 50, 100, {value: -1, label: 'All'}]}
                     count={viewPage.count}
@@ -96,7 +96,7 @@ class TaskView extends React.Component {
                                     />
                                 </TableCell>
                                 <TableCell component="th" scope="row">
-                                    <Link href="page?id=877">{row.title}</Link>
+                                    <Link href={"document?id=" + row.id} >{row.title}</Link>
                                 </TableCell>
                                 <TableCell align="right">{row.type}</TableCell>
                                 <TableCell align="right">{row.status}</TableCell>

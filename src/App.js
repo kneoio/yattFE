@@ -13,13 +13,15 @@ import TaskView from "./components/TaskView";
 import SimpleTable from "./components/SimpleTable";
 import ProfilePage from "./components/ProfilePage";
 import {makeStyles} from "@material-ui/core/styles";
+import Outline from './components/Outline'
 
 function App() {
     return (
         <Provider store={store}>
             <Router>
                 <div className="App">
-                    <Switch>
+                    <Outline/>
+                    {/*<Switch>
                         <Route path="/home">
                             <Navigator/>
                             <TaskView/>
@@ -32,7 +34,7 @@ function App() {
                             <Navigator/>
                             <SimpleTable/>
                         </Route>
-                    </Switch>
+                    </Switch>*/}
                 </div>
             </Router>
         </Provider>

@@ -17,6 +17,7 @@ const Routes = [
         icon: AccountCircle,
         component: ProfilePage
     }
+
 ];
 
 export default Routes;
