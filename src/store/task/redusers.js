@@ -1,28 +1,30 @@
-import {GET_TASKS, GETTING_TASKS_FAILURE} from "./actions";
-
+import {GET_TASK, GET_TASKS, GETTING_TASKS_FAILURE} from "./actions";
 
 const defaultState = {
     serverPage: {
         type:'',
         pageName:'',
         title:'',
-        viewPage: {
+        payload: {
             count: 0,
             pageSize: 20,
             pageNum: 0,
             result:[]
         }
-
-
-
     },
     error: ''
-
 }
 
 export const taskReducer  = (state = defaultState, action) => {
     switch (action.type) {
         case GET_TASKS: {
+            return {
+                ...state,
+                serverPage: action.payload,
+            }
+            break;
+        }
+        case GET_TASK: {
             return {
                 ...state,
                 serverPage: action.payload,
@@ -35,7 +37,6 @@ export const taskReducer  = (state = defaultState, action) => {
                 error: action.payload
             }
             break;
-
         }
         default:
             return state;

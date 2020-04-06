@@ -18,8 +18,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import TaskView from "./TaskView";
-import orange from '@material-ui/core/colors/orange';
-
 
 const drawerWidth = 240;
 
@@ -97,7 +95,6 @@ export default function PersistentDrawerLeft() {
         <div className={classes.root}>
             <CssBaseline />
             <AppBar
-                color={orange["700"]}
                 position="fixed"
                 className={clsx(classes.appBar, {
                     [classes.appBarShift]: open,

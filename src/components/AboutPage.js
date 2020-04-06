@@ -1,9 +1,9 @@
 import React from 'react'
 
-const ProfilePage = () => (
+const AboutPage = () => (
     <div  style={{marginLeft:200}}>
         <h1>Profile</h1>
     </div>
 )
 
-export default ProfilePage
+export default AboutPage

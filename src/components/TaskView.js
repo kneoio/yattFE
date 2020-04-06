@@ -10,7 +10,8 @@ import {connect} from "react-redux";
 import Checkbox from "@material-ui/core/Checkbox";
 import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
-import Link from "@material-ui/core/Link";
+import {Link} from "react-router-dom";
+
 
 class TaskView extends React.Component {
 
@@ -19,8 +20,10 @@ class TaskView extends React.Component {
         this.state = {
             count: 0,
             pageSize: 20,
-            page: 1
+            page: 1,
+            isSignedUp: false
         };
+
         this.handleChangePage = this.handleChangePage.bind(this);
     }
 
@@ -43,15 +46,15 @@ class TaskView extends React.Component {
         this.props.fetchTasks(size, 1);
     }
 
-    handleRowClick (event) {
-         console.log(event);
+    handleRowClick(event) {
+        console.log(event);
     }
 
     render() {
-        let viewPage = this.props.tasks.serverPage.viewPage;
+        let viewPage = this.props.tasks.serverPage.payload;
         let rows = viewPage.result;
-        return <div>
-            <TableContainer >
+        return (<div>
+            <TableContainer>
                 <TablePagination
                     rowsPerPageOptions={[20, 50, 100, {value: -1, label: 'All'}]}
                     count={viewPage.count}
@@ -76,25 +79,22 @@ class TaskView extends React.Component {
                             <TableRow
                                 hover
                                 key={row.id}
-                                >
+                            >
                                 <TableCell padding="checkbox">
-                                    <Checkbox
-
-                                    />
+                                    <Checkbox/>
                                 </TableCell>
-                                <TableCell component="th" scope="row">
-                                    <Link href={"document?id=" + row.id} >{row.title}</Link>
-                                </TableCell>
+                                <TableCell component={Link} to={"/document/" + row.id}>{row.title}</TableCell>
                                 <TableCell align="right">{row.type}</TableCell>
                                 <TableCell align="right">{row.status}</TableCell>
                                 <TableCell align="right">{row.stage}</TableCell>
                                 <TableCell align="right">{row.deadline}</TableCell>
+
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
-        </div>
+        </div>)
     }
 }
 
