@@ -21,7 +21,7 @@ export const login = (login, password) => dispatch => {
 const loginSuccess = serverPage => {
     return {
         type: LOGIN,
-        payload: serverPage
+        serverResponseData: serverPage
     }
 }
 
@@ -29,6 +29,6 @@ const loginSuccess = serverPage => {
 const loginFail = serverPage => {
     return {
         type: LOGIN,
-        payload: serverPage
+        serverResponseData: serverPage
     }
 }

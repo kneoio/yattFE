@@ -7,13 +7,12 @@ const defaultState = {
     }
 }
 
-
 export const loginReducer  = (state = defaultState, action) => {
     switch (action.type) {
         case LOGIN: {
             return {
                 ...state,
-                serverPage: action.payload,
+                serverPage: action.serverResponseData,
             }
             break;
         }

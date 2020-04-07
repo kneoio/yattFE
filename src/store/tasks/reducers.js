@@ -1,4 +1,4 @@
-import {GET_TASK, GET_TASKS, GETTING_TASKS_FAILURE} from "./actions";
+import {GET_TASKS, GETTING_TASKS_FAILURE} from "./actions";
 
 const defaultState = {
     serverPage: {
@@ -15,33 +15,25 @@ const defaultState = {
     error: ''
 }
 
-export const taskReducer  = (state = defaultState, action) => {
+export const tasksReducer  = (state = defaultState, action) => {
     switch (action.type) {
         case GET_TASKS: {
             return {
                 ...state,
-                serverPage: action.payload,
-            }
-            break;
-        }
-        case GET_TASK: {
-            return {
-                ...state,
-                serverPage: action.payload,
+                serverPage: action.serverResponseData,
             }
             break;
         }
         case GETTING_TASKS_FAILURE: {
             return {
                 ...state,
-                error: action.payload
+                error: action.serverResponseData
             }
             break;
         }
         default:
             return state;
     }
-
 }
 
 
