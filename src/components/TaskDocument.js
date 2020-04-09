@@ -1,5 +1,5 @@
 import React from 'react';
-import {fetchTask} from "../store/task/actions";
+import {fetchTask, saveTask} from "../store/task/actions";
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
 import TextField from "@material-ui/core/TextField";
@@ -14,7 +14,21 @@ class TaskDocument extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: 0
+            id: 0,
+            task: {
+                id: 100,
+                author: 2,
+                regDate: "",
+                lastModifiedDate: "",
+                title: "tsts test",
+                type: 5,
+                status: "",
+                stage: "",
+                description: "",
+                deadline: "",
+                assignee: ""
+            }
+
         };
         this.saveForm = this.saveForm.bind(this);
     }
@@ -27,13 +41,13 @@ class TaskDocument extends React.Component {
     saveForm = event => {
         console.log(event);
         event.preventDefault();
-        this.props.login(this.state.user, this.state.password);
+        this.props.saveTask(this.state.task);
     }
 
     cancelForm = event => {
         console.log(event);
         event.preventDefault();
-        this.props.login(this.state.user, this.state.password);
+        //this.props.login(this.state.user, this.state.password);
     }
 
     render() {
@@ -126,14 +140,15 @@ class TaskDocument extends React.Component {
 }
 
 TaskDocument.propTypes = {
-    fetchTask: PropTypes.func.isRequired
+    fetchTask: PropTypes.func.isRequired,
+    saveTask: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
     task: state.task,
 });
 
-export default connect(mapStateToProps, {fetchTask})(withRouter(TaskDocument));
+export default connect(mapStateToProps, {fetchTask, saveTask})(withRouter(TaskDocument));
 
 
 

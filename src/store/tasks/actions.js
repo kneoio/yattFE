@@ -21,9 +21,15 @@ export const fetchTasks = (size, page) => dispatch => {
             dispatch(fetchTasksSuccess(response.data))
         })
         .catch(error => {
-            console.log(error.response);
-            window.location.replace('/sign_in');
-            dispatch(fetchTasksFailure(error))
+            console.log(error);
+            if (error.response.status === 500) {
+                console.log('500');
+                console.log(error.response);
+            } else {
+                window.location.replace('/sign_in');
+            }
+
+            //dispatch(fetchTasksFailure(error))
         })
 }
 

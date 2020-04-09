@@ -33,9 +33,12 @@ export const saveTask = (task) => dispatch => {
             'Authorization': sessionStorage.getItem("jwtToken")
         }
     });
+    let jsonAsText = JSON.stringify(task);
+    //let jsonAsText = "'Task':{" +  JSON.stringify(task) + "}";
     let URL = 'http://silverbox.example.com:8080/tasks/';
     console.log('request > ' + URL)
-    connectSession.post(URL)
+    console.log(task)
+    connectSession.post(URL, jsonAsText)
         .then(response => {
             console.log(response.data)
             dispatch(fetchTaskSuccess(response.data))
