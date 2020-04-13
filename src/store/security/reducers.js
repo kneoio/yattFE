@@ -1,9 +1,11 @@
 import {LOGIN} from "../security/actions";
 
 const defaultState = {
-    credentials: {
-        usr:'',
-        pwd:''
+    serverPage: {
+        type: '',
+        pageName: '',
+        title: '',
+        payload: null
     }
 }
 
@@ -12,7 +14,7 @@ export const loginReducer  = (state = defaultState, action) => {
         case LOGIN: {
             return {
                 ...state,
-                serverPage: action.serverResponseData,
+                serverPage: action.serverResponseData
             }
             break;
         }

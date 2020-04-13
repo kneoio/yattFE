@@ -1,9 +1,8 @@
 import axios from 'axios';
 
-export const GET_TASKS = "GET_TASKS";
-export const GETTING_TASKS_FAILURE = "GETTING_TASKS_FAILURE";
+export const GET_ASSIGNEES = "GET_ASSIGNEES";
 
-export const fetchTasks = (size, page) => dispatch => {
+export const fetchAssignees = (size, page) => dispatch => {
     const connectSession = axios.create({
         timeout: 10000,
         withCredentials: true,
@@ -12,16 +11,15 @@ export const fetchTasks = (size, page) => dispatch => {
             'Authorization': sessionStorage.getItem("jwtToken")
         }
     });
-    let URL = 'http://silverbox.example.com:8080/tasks?pageSize=' + size + '&pageNum=' + page;
+    let URL = 'http://silverbox.example.com:8080/assignees?pageSize=' + size + '&pageNum=' + page;
     console.log('request > ' + URL)
     connectSession.get(URL)
         .then(response => {
-            console.log('tasks list response=',response.data)
             dispatch(fetchTasksSuccess(response.data))
         })
         .catch(error => {
             console.log(error);
-            if (error.response && (error.response.status === 400 || error.response.status === 500)){
+            if (error.response.status === 500) {
                 console.log('500');
                 console.log(error.response);
             } else {
@@ -34,14 +32,8 @@ export const fetchTasks = (size, page) => dispatch => {
 
 export const fetchTasksSuccess = serverPage => {
     return {
-        type: GET_TASKS,
+        type: GET_ASSIGNEES,
         serverResponseData: serverPage
     }
 }
 
-export const fetchTasksFailure = error => {
-    return {
-        type: GETTING_TASKS_FAILURE,
-        serverResponseData: error
-    }
-}

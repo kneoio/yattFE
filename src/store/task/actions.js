@@ -13,11 +13,11 @@ export const fetchTask = (id) => dispatch => {
         }
     });
     let URL = 'http://silverbox.example.com:8080/tasks/' + id;
-    console.log('request > ' + URL)
     connectSession.get(URL)
         .then(response => {
-            console.log(response.data)
-            dispatch(fetchTaskSuccess(response.data))
+            console.log('a tasks =',response.data)
+            //dispatch(fetchTaskSuccess(response.data))
+            dispatch({type: GET_TASK, serverResponseData: response.data})
         })
         .catch(error => {
             console.log(error)
@@ -25,11 +25,13 @@ export const fetchTask = (id) => dispatch => {
 }
 
 export const saveTask = (task) => dispatch => {
+    console.log('task to save=',task)
     const connectSession = axios.create({
         timeout: 10000,
         withCredentials: true,
         headers: {
             'Accept': 'application/json',
+            'Content-type': 'application/json',
             'Authorization': sessionStorage.getItem("jwtToken")
         }
     });
@@ -38,13 +40,21 @@ export const saveTask = (task) => dispatch => {
     let URL = 'http://silverbox.example.com:8080/tasks/';
     console.log('request > ' + URL)
     console.log(task)
-    connectSession.post(URL, jsonAsText)
+    connectSession.post(URL, task)
         .then(response => {
-            console.log(response.data)
+            console.log('the task save result=',response.data)
             dispatch(fetchTaskSuccess(response.data))
         })
         .catch(error => {
-            console.log(error)
+            if (error.response.status && (error.response.status === 400 || error.response.status === 500)){
+                console.log(error.response.data);
+                console.log(error.response.data.payload.debugMessage);
+                debugger
+                window.location.replace('/error/:' + error.response.data.payload.debugMessage);
+            } else {
+                console.log(error)
+            }
+            this.props.history.push("/home");
         })
 }
 

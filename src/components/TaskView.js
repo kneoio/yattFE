@@ -53,7 +53,6 @@ class TaskView extends React.Component {
     render() {
         let viewPage = this.props.tasks.serverPage.payload;
         let rows = viewPage.result;
-        console.log(rows);
         let tableBody = "no data";
         if (rows) {
             tableBody = <TableBody>{rows.map(row => (

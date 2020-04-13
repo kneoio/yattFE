@@ -1,5 +1,4 @@
 import axios from 'axios';
-import React from "react";
 export const LOGIN = "LOGIN";
 
 export const login = (login, password) => dispatch => {
@@ -8,27 +7,14 @@ export const login = (login, password) => dispatch => {
     axios.get(URL + "?usr=u&pwd=1")
         .then(response => {
             console.log("login success")
-            console.log(response.headers)
             sessionStorage.setItem("jwtToken", response.headers.authorization);
+            dispatch({type: LOGIN, serverResponseData: "success"})
             window.location.replace('/home');
         })
         .catch(error => {
             console.log("login fail")
             console.log(error)
+            dispatch({type: LOGIN, serverResponseData: "fail"})
         })
 }
 
-const loginSuccess = serverPage => {
-    return {
-        type: LOGIN,
-        serverResponseData: serverPage
-    }
-}
-
-
-const loginFail = serverPage => {
-    return {
-        type: LOGIN,
-        serverResponseData: serverPage
-    }
-}
