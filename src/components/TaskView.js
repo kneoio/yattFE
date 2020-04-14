@@ -23,31 +23,10 @@ class TaskView extends React.Component {
             page: 1,
             isSignedUp: false
         };
-
-        this.handleChangePage = this.handleChangePage.bind(this);
     }
 
     componentDidMount() {
         this.props.fetchTasks(this.state.pageSize, this.state.page);
-    }
-
-    handleChangePage(event, page) {
-        this.props.fetchTasks(this.state.pageSize, page);
-        this.setState({
-            page: page
-        })
-    };
-
-    handleChangeRowsPerPage = (event) => {
-        let size = parseInt(event.target.value, 10);
-        this.setState({
-            pageSize: size
-        })
-        this.props.fetchTasks(size, 1);
-    }
-
-    handleRowClick(event) {
-        console.log(event);
     }
 
     render() {
@@ -86,6 +65,22 @@ class TaskView extends React.Component {
 class TaskTablePagination extends React.Component {
     constructor(props) {
         super(props);
+        this.handleChangePage = this.handleChangePage.bind(this);
+    }
+
+    handleChangePage(event, page) {
+        this.props.fetchTasks(this.state.pageSize, page);
+        this.setState({
+            page: page
+        })
+    };
+
+    handleChangeRowsPerPage = (event) => {
+        let size = parseInt(event.target.value, 10);
+        this.setState({
+            pageSize: size
+        })
+        this.props.fetchTasks(size, 1);
     }
 
     render() {

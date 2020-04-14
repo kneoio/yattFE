@@ -18,6 +18,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import TaskView from "./TaskView";
+import MenuItem from "@material-ui/core/MenuItem";
+import {AccountCircle, Menu} from "@material-ui/icons";
 
 const drawerWidth = 240;
 
