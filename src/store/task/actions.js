@@ -27,7 +27,7 @@ export const fetchTask = (id) => dispatch => {
 export const saveTask = (task) => dispatch => {
     console.log('task to save=',task)
     const connectSession = axios.create({
-        timeout: 10000,
+        //timeout: 10000,
         withCredentials: true,
         headers: {
             'Accept': 'application/json',
@@ -44,17 +44,23 @@ export const saveTask = (task) => dispatch => {
         .then(response => {
             console.log('the task save result=',response.data)
             dispatch(fetchTaskSuccess(response.data))
+            //this.props.history.push("/home");
         })
         .catch(error => {
-            if (error.response.status && (error.response.status === 400 || error.response.status === 500)){
-                console.log(error.response.data);
-                console.log(error.response.data.payload.debugMessage);
-                debugger
-                window.location.replace('/error/:' + error.response.data.payload.debugMessage);
+            debugger
+            if (error.response) {
+                if (error.response.status && (error.response.status === 400 || error.response.status === 500)) {
+                    console.log(error.response.data);
+                    if (error.response.data.payload.debugMessage) console.log(error.response.data.payload.debugMessage);
+                    debugger
+                    window.location.replace('/error/:' + error.response.data.payload.debugMessage);
+                } else {
+                    console.log(error.response)
+                }
             } else {
                 console.log(error)
             }
-            this.props.history.push("/home");
+            //this.props.history.push("/home");
         })
 }
 

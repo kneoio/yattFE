@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 export const LOGIN = "LOGIN";
 
 export const login = (login, password) => dispatch => {
@@ -12,9 +13,18 @@ export const login = (login, password) => dispatch => {
             window.location.replace('/home');
         })
         .catch(error => {
-            console.log("login fail")
-            console.log(error)
-            dispatch({type: LOGIN, serverResponseData: "fail"})
-        })
+                console.log("login fail")
+                console.log(error)
+                dispatch({
+                        type: LOGIN,
+                        serverResponseData: {
+                            type: 'LOGIN_FAIL',
+                            title: 'The server cause an error or out of the service'
+                        }
+                    }
+                )
+            }
+        )
+
 }
 

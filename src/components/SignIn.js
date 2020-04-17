@@ -4,7 +4,7 @@ import Button from "@material-ui/core/Button";
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
 import {login} from "../store/security/actions";
-//import Alert from '@material-ui/lab/Alert';
+import Alert from "@material-ui/lab/Alert";
 
 class SignIn extends React.Component {
 
@@ -38,10 +38,8 @@ class SignIn extends React.Component {
 
     render() {
         let message = '';
-        const {user, password} = this.state
-        console.log('security', this.props.security)
-        if (this.props.security != 'success'){
-  //          message = <Alert severity="error">This is an error alert — check it out!</Alert>
+        if (this.props.security.type === 'LOGIN_FAIL'){
+            message = <Alert severity="error">{this.props.security.title}</Alert>
         }
         return (
             <form onSubmit={this.submitLogin}>
@@ -77,14 +75,13 @@ class SignIn extends React.Component {
     }
 }
 
-
 SignIn.propTypes = {
     login: PropTypes.func.isRequired,
     //security: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
-    security: state.security,
+    security: state.security.serverPage,
 });
 
 

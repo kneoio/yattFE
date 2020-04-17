@@ -1,4 +1,4 @@
-import {GET_TASKS, GETTING_TASKS_FAILURE} from "./actions";
+import {GET_TASKS} from "./actions";
 
 const defaultState = {
     serverPage: {
@@ -21,13 +21,6 @@ export const tasksReducer  = (state = defaultState, action) => {
             return {
                 ...state,
                 serverPage: action.serverResponseData,
-            }
-            break;
-        }
-        case GETTING_TASKS_FAILURE: {
-            return {
-                ...state,
-                error: action.serverResponseData
             }
             break;
         }

@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 export const GET_TASKS = "GET_TASKS";
-export const GETTING_TASKS_FAILURE = "GETTING_TASKS_FAILURE";
 
 export const fetchTasks = (size, page) => dispatch => {
     const connectSession = axios.create({
@@ -22,13 +21,22 @@ export const fetchTasks = (size, page) => dispatch => {
         .catch(error => {
             console.log(error);
             if (error.response && (error.response.status === 400 || error.response.status === 500)){
-                console.log('500');
                 console.log(error.response);
+                if (error.response.data) {
+                    dispatch(fetchTasksSuccess(error.response.data))
+                } else {
+                    dispatch({
+                            type: GET_TASKS,
+                            serverResponseData: {
+                                type: 'ERROR',
+                                title: 'The server cause an error or out of the service'
+                            }
+                        }
+                    )
+                }
             } else {
                 window.location.replace('/sign_in');
             }
-
-            //dispatch(fetchTasksFailure(error))
         })
 }
 
@@ -36,12 +44,5 @@ export const fetchTasksSuccess = serverPage => {
     return {
         type: GET_TASKS,
         serverResponseData: serverPage
-    }
-}
-
-export const fetchTasksFailure = error => {
-    return {
-        type: GETTING_TASKS_FAILURE,
-        serverResponseData: error
     }
 }

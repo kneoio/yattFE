@@ -58,12 +58,13 @@ class TaskDocument extends React.Component {
         console.log('form data to send:', formData.description);
         this.props.saveTask({
             description: formData.description,
-            assigneeId: formData.assigneeId,
+            assignee: formData.assigneeId,
             deadline: formData.deadline,
             stageCode: formData.stageCode,
             statusCode: formData.statusCode,
             typeCode: formData.typeCode
         });
+        this.cancelForm();
     }
 
     cancelForm = () => {
@@ -83,6 +84,7 @@ class TaskDocument extends React.Component {
     renderDateField = ({input, label, meta: {touched, error}, ...custom}) => (
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardDatePicker
+                style={{width: 200}}
                 disableToolbar
                 variant="inline"
                 format="dd.MM.yyyy"

@@ -11,6 +11,8 @@ import Checkbox from "@material-ui/core/Checkbox";
 import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import {Link} from "react-router-dom";
+import Alert from "@material-ui/lab/Alert";
+import {logger} from "redux-logger/src";
 
 
 class TaskView extends React.Component {
@@ -20,7 +22,7 @@ class TaskView extends React.Component {
         this.state = {
             count: 0,
             pageSize: 20,
-            page: 1,
+            page: 0,
             isSignedUp: false
         };
     }
@@ -30,35 +32,45 @@ class TaskView extends React.Component {
     }
 
     render() {
-        let viewPage = this.props.tasks.serverPage.payload;
-        let rows = viewPage.result;
-        let tableBody = "no data";
-        if (rows) {
-            tableBody = <TableBody>{rows.map(row => (
-                <TableRow
-                    hover
-                    key={row.id}
-                >
-                    <TableCell padding="checkbox">
-                        <Checkbox/>
-                    </TableCell>
-                    <TableCell component={Link} to={"/document/" + row.id}>{row.title}</TableCell>
-                    <TableCell align="right">{row.type}</TableCell>
-                    <TableCell align="right">{row.status}</TableCell>
-                    <TableCell align="right">{row.stage}</TableCell>
-                    <TableCell align="right">{row.deadline}</TableCell>
-                </TableRow>
-            ))} </TableBody>;
+        if (this.props.tasks.type === ''){
+            return (<Alert>loading</Alert>);
+        } else if (this.props.tasks.type === 'ERROR'){
+            return (<Alert severity="error">{this.props.tasks.title}</Alert>)
         }
-        return (<div>
+        let viewPage = this.props.tasks.payload;
+        let rows = viewPage.result;
+        if (!rows) {
+            return (<Alert>Loading ...</Alert>);
+        }
+        return(
             <TableContainer>
-                <TaskTablePagination view={viewPage}/>
                 <Table>
-                    <TaskTableHead/>
-                    {tableBody};
+                    <TableHead>
+                        <TableRow>
+                            <TaskTablePagination view={viewPage}/>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell>#</TableCell>
+                            <TableCell>Description</TableCell>
+                            <TableCell>Type</TableCell>
+                            <TableCell>Status</TableCell>
+                            <TableCell>Stage</TableCell>
+                            <TableCell>Deadline</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>{rows.map(row =>(
+                        <TableRow hover  key={row.id}>
+                            <TableCell padding="checkbox"><Checkbox/></TableCell>
+                            <TableCell component={Link} to={"/document/" + row.id}>{row.title}</TableCell>
+                            <TableCell align="right">{row.typeCode}</TableCell>
+                            <TableCell align="right">{row.statusCode}</TableCell>
+                            <TableCell align="right">{row.stageCode}</TableCell>
+                            <TableCell align="right">{row.deadline}</TableCell>
+                        </TableRow>
+                    ))}</TableBody>
                 </Table>
             </TableContainer>
-        </div>)
+        )
     }
 }
 
@@ -85,31 +97,18 @@ class TaskTablePagination extends React.Component {
 
     render() {
         let viewPage = this.props.view;
-        return(
-        <TablePagination
-            rowsPerPageOptions={[20, 50, 100, {value: -1, label: 'All'}]}
-            count={viewPage.count}
-            rowsPerPage={viewPage.pageSize}
-            page={viewPage.pageNum}
-            onChangePage={this.handleChangePage}
-            onChangeRowsPerPage={this.handleChangeRowsPerPage}
-        />)
+        console.log(viewPage.pageNum)
+        return (
+            <TablePagination
+                rowsPerPageOptions={[20, 50, 100, {value: -1, label: 'All'}]}
+                count={viewPage.count}
+                rowsPerPage={viewPage.pageSize}
+                page={viewPage.pageNum}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+            />)
     }
 }
-
-const TaskTableHead = () => (
-    <TableHead>
-        <TableRow>
-            <TableCell></TableCell>
-            <TableCell>Description</TableCell>
-            <TableCell>Type</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell>Stage</TableCell>
-            <TableCell>Deadline</TableCell>
-        </TableRow>
-    </TableHead>
-)
-
 
 TaskView.propTypes = {
     fetchTasks: PropTypes.func.isRequired,
@@ -117,7 +116,7 @@ TaskView.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    tasks: state.tasks,
+    tasks: state.tasks.serverPage,
 });
 
 
