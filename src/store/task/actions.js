@@ -2,6 +2,7 @@ import axios from 'axios';
 import React from "react";
 
 export const GET_TASK = "GET_TASK";
+export const SAVE_TASK_RESULT = "SAVE_TASK_RESULT";
 
 export const fetchTask = (id) => dispatch => {
     const connectSession = axios.create({
@@ -16,7 +17,6 @@ export const fetchTask = (id) => dispatch => {
     connectSession.get(URL)
         .then(response => {
             console.log('a tasks =',response.data)
-            //dispatch(fetchTaskSuccess(response.data))
             dispatch({type: GET_TASK, serverResponseData: response.data})
         })
         .catch(error => {
@@ -25,7 +25,7 @@ export const fetchTask = (id) => dispatch => {
 }
 
 export const saveTask = (task) => dispatch => {
-    console.log('task to save=',task)
+   // console.log('task to save=',task)
     const connectSession = axios.create({
         //timeout: 10000,
         withCredentials: true,
@@ -35,25 +35,18 @@ export const saveTask = (task) => dispatch => {
             'Authorization': sessionStorage.getItem("jwtToken")
         }
     });
-    let jsonAsText = JSON.stringify(task);
-    //let jsonAsText = "'Task':{" +  JSON.stringify(task) + "}";
     let URL = 'http://silverbox.example.com:8080/tasks/';
-    console.log('request > ' + URL)
-    console.log(task)
     connectSession.post(URL, task)
         .then(response => {
             console.log('the task save result=',response.data)
-            dispatch(fetchTaskSuccess(response.data))
+            dispatch(saveTaskResult(response.data))
             //this.props.history.push("/home");
         })
         .catch(error => {
-            debugger
             if (error.response) {
                 if (error.response.status && (error.response.status === 400 || error.response.status === 500)) {
                     console.log(error.response.data);
-                    if (error.response.data.payload.debugMessage) console.log(error.response.data.payload.debugMessage);
-                    debugger
-                    window.location.replace('/error/:' + error.response.data.payload.debugMessage);
+                    dispatch(saveTaskResult(error.response.data));
                 } else {
                     console.log(error.response)
                 }
@@ -64,9 +57,9 @@ export const saveTask = (task) => dispatch => {
         })
 }
 
-export const fetchTaskSuccess = serverPage => {
+export const saveTaskResult = serverPage => {
     return {
-        type: GET_TASK,
+        type: SAVE_TASK_RESULT,
         serverResponseData: serverPage
     }
 }

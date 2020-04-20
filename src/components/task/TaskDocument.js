@@ -1,131 +1,75 @@
 import React from 'react';
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
-import {Field, reduxForm} from 'redux-form'
+import {reduxForm} from 'redux-form'
 import {withRouter} from "react-router";
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
 import {fetchTask, saveTask} from "../../store/task/actions";
 import {fetchAssignees} from "../../store/assignees/actions";
-import Select from "@material-ui/core/Select";
 import 'date-fns';
-import DateFnsUtils from '@date-io/date-fns';
-import {
-    MuiPickersUtilsProvider,
-    KeyboardTimePicker,
-    KeyboardDatePicker,
-} from '@material-ui/pickers';
-import AppBar from "@material-ui/core/AppBar";
+import Alert from "@material-ui/lab/Alert";
+import {TaskForm} from "./TaskForm";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+import Paper from "@material-ui/core/Paper";
+import Grid from "@material-ui/core/Grid";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
+import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
-import MenuItem from "@material-ui/core/MenuItem";
-import TextField from "@material-ui/core/TextField";
+import MenuIcon from "@material-ui/icons/Menu";
 
 class TaskDocument extends React.Component {
+
+    state = {
+        taskDocument: {},
+        value: 1,
+        index: 0
+    }
+
     constructor(props) {
         super(props);
-        this.types = [
-            {title: "UNKNOWN", code: 0},
-            {title: "DEVELOPING", code: 21},
-            {title: "TESTING", code: 22},
-            {title: "DOCUMENT", code: 23}
-        ];
-        this.statuses = [
-            {title: "UNKNOWN", code: 0},
-            {title: "ON_TIME", code: 11},
-            {title: "DELAYING", code: 12},
-            {title: "STOPPED", code: 13},
-        ];
-        this.stages = [
-            {title: "UNKNOWN", code: 0},
-            {title: "DRAFT", code: 1},
-            {title: "IN_PROGRESS", code: 2},
-            {title: "DONE", code: 3},
-            {title: "SUSPEND", code: 4}
-        ]
         this.saveForm = this.saveForm.bind(this);
     }
 
     componentDidMount() {
-        const id = this.props.match.params.id;
-        this.props.fetchTask(id);
+        this.props.fetchTask(this.props.match.params.id);
         this.props.fetchAssignees();
     }
+
+    a11yProps(index) {
+        return {
+            id: `simple-tab-${index}`,
+            'aria-controls': `simple-tabpanel-${index}`,
+        };
+    }
+
+    handleChange = (event, newValue) => {
+        this.state.value = newValue;
+    };
 
     saveForm(formData) {
         console.log('form data to send:', formData.description);
         this.props.saveTask({
+            id: this.props.id,
             description: formData.description,
-            assignee: formData.assigneeId,
+            assignee: Number(formData.assigneeId),
             deadline: formData.deadline,
             stageCode: formData.stageCode,
             statusCode: formData.statusCode,
             typeCode: formData.typeCode
         });
-        this.cancelForm();
+        //this.cancelForm();
     }
-
-    cancelForm = () => {
-        this.props.history.push("/home");
-    }
-
-    renderSelectField = ({input, label, meta: {touched, error}, children, ...custom}) => (
-        <Select
-            style={{width: 200}}
-            hintText={label}
-            {...input}
-            children={children}
-            {...custom}
-        />
-    )
-
-    renderDateField = ({input, label, meta: {touched, error}, ...custom}) => (
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <KeyboardDatePicker
-                style={{width: 200}}
-                disableToolbar
-                variant="inline"
-                format="dd.MM.yyyy"
-                margin="normal"
-                KeyboardButtonProps={{
-                    'aria-label': 'change date',
-                }}
-                {...input}
-                {...custom}
-            />
-        </MuiPickersUtilsProvider>
-    )
-
-    renderComboboxField = ({input, label, meta: {touched, error}, ...custom}) => (
-        <Select
-            native
-            style={{width: 500}}
-            label="Assignee"
-            {...input}
-            {...custom}
-        >
-            {this.props.allAssignees.payload.result.map(row => (
-                <option value={row.id}>{row.title}</option>))}
-        </Select>
-    )
-
-    renderMultiTextField = ({input, label, meta: {touched, error}, ...custom}) => (
-        <TextField
-            label={label}
-            style={{width: 500}}
-            variant="outlined"
-            multiline
-            rows="6"
-            value="k;klk;"
-            {...input}
-            {...custom}
-        />
-    )
 
     render() {
-        const {handleSubmit, load, pristine, reset, submitting} = this.props
+        let message = '';
+        console.log(this.props.response.type)
+        if (this.props.response.type === 'ERROR') {
+            message = <Alert severity="error" style={{marginTop: 15}}>{this.props.response.title}</Alert>
+        } else {
+            message = <Alert severity="info" style={{marginTop: 15}}>Saved successfully</Alert>
+        }
+        const {handleSubmit} = this.props
         return (
             <div>
                 <AppBar>
@@ -142,48 +86,27 @@ class TaskDocument extends React.Component {
                         </Typography>
                     </Toolbar>
                 </AppBar>
-                <form onSubmit={handleSubmit(this.saveForm)}>
-                    <Grid container spacing={1} style={{marginTop: 100, marginLeft: 50}}>
-                        <Field name="typeCode" component={this.renderSelectField}>
-                            {this.types.map(row => (
-                                <MenuItem value={row.code}>{row.title}</MenuItem>))}
-                        </Field>
-                    </Grid>
-                    <Grid container spacing={1} style={{marginTop: 20, marginLeft: 50}}>
-                        <Field name="statusCode" component={this.renderSelectField}>
-                            {this.statuses.map(row => (
-                                <MenuItem value={row.code}>{row.title}</MenuItem>))}
-                        </Field>
-                    </Grid>
-                    <Grid container spacing={1} style={{marginTop: 20, marginLeft: 50}}>
-                        <Field name="stageCode" component={this.renderSelectField} label="Stage">
-                            {this.stages.map(row => (
-                                <MenuItem value={row.code}>{row.title}</MenuItem>))}
-                        </Field>
-                    </Grid>
-                    <Grid container spacing={1} style={{marginTop: 20, marginLeft: 50}}>
-                        <Field name="deadline" component={this.renderDateField}/>
-                    </Grid>
-                    <Grid container spacing={1} style={{marginTop: 20, marginLeft: 50}}>
-                        <Field name="assignee" component={this.renderComboboxField}/>
-                    </Grid>
-                    <Grid container spacing={1} style={{marginTop: 20, marginLeft: 50}} label="Description">
-                        <Field name="description" component={this.renderMultiTextField}/>
-                    </Grid>
-                    <Grid container spacing={1} style={{marginTop: 20, marginLeft: 50}}>
-                        <div>
-                            <Button
-                                variant="contained"
-                                onClick={this.cancelForm}
-                            >
-                                Close
-                            </Button>
-                            <Button type="submit" color="primary" variant="contained" style={{marginLeft: 10}}>
-                                Save & close
-                            </Button>
-                        </div>
-                    </Grid>
-                </form>
+                <Grid container spacing={1} style={{marginTop: 40}}>
+                    <Paper>
+                        <Tabs value={this.value}
+                              onChange={this.handleChange}
+                              aria-label="simple tabs example"
+                              style={{marginTop: 20}}>
+                            <Tab label="Common properties"/>
+                            <Tab label="ACL"/>
+                        </Tabs>
+                    </Paper>
+                </Grid>
+                <Grid container spacing={1}>
+                    <TaskForm
+                        value="1"
+                        handleSubmitFunction={handleSubmit(this.saveForm)}
+                        saveHandler={this.saveForm}
+                        allAssignees={this.props.allAssignees}
+                        hidden={this.value !== this.index}
+                    />
+                </Grid>
+                {message}
             </div>
         )
     }
@@ -197,13 +120,15 @@ TaskDocument.propTypes = {
 
 const mapStateToProps = state => ({
     allAssignees: state.assignees.serverPage,
+    response: state.saving,
+    id: state.servEntity.payload.id,
     initialValues: {
-        typeCode: state.servEntity.serverPage.payload.typeCode,
-        statusCode: state.servEntity.serverPage.payload.statusCode,
-        stageCode: state.servEntity.serverPage.payload.stageCode,
-        deadline: state.servEntity.serverPage.payload.deadline,
-        assigneeId: state.servEntity.serverPage.payload.assigneeId,
-        description: state.servEntity.serverPage.payload.description
+        typeCode: state.servEntity.payload.typeCode,
+        statusCode: state.servEntity.payload.statusCode,
+        stageCode: state.servEntity.payload.stageCode,
+        deadline: state.servEntity.payload.deadline,
+        assigneeId: state.servEntity.payload.assigneeId,
+        description: state.servEntity.payload.description
     }
 });
 

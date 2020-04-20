@@ -11,7 +11,7 @@ export const fetchAssignees = (size, page) => dispatch => {
             'Authorization': sessionStorage.getItem("jwtToken")
         }
     });
-    let URL = 'http://silverbox.example.com:8080/assignees?pageSize=' + size + '&pageNum=' + page;
+    let URL = 'http://silverbox.example.com:8080/assignees';
     console.log('request > ' + URL)
     connectSession.get(URL)
         .then(response => {

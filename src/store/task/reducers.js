@@ -1,41 +1,65 @@
-import {GET_TASK} from "./actions";
+import {GET_TASK, SAVE_TASK_RESULT} from "./actions";
 
-const defaultState = {
-    serverPage: {
-        type:'',
-        pageName:'',
-        title:'',
-        payload: {
-            id: 0,
-            author: 0,
-            regDate: "",
-            lastModifiedDate: "",
-            title: '',
-            type: "",
-            status: "",
-            stage: "",
-            description: "",
-            deadline: "",
-            assignee: ""
+const taskDefaultState = {
+    identifier: null,
+    type: null,
+    pageName: null,
+    title: null,
+    payload: {
+        id: 0,
+        author: 0,
+        regDate: "",
+        lastModifiedDate: "",
+        title: "",
+        type: "",
+        status: "",
+        stage: "",
+        description: "",
+        deadline: "",
+        assignee: ""
 
-        }
-    },
-    error: ''
+    }
 }
 
-export const taskReducer  = (state = defaultState, action) => {
+const taskSavingDefaultState = {
+    identifier: null,
+    type: null,
+    pageName: null,
+    title: null
+}
+
+
+export const taskReducer = (state = taskDefaultState, action) => {
     switch (action.type) {
         case GET_TASK: {
             return {
                 ...state,
-                serverPage: action.serverResponseData,
+                identifier: action.serverResponseData.identifier,
+                type: action.serverResponseData.type,
+                title: action.serverResponseData.title,
+                payload: action.serverResponseData.payload
             }
             break;
         }
         default:
             return state;
     }
+}
 
+export const saveTaskReducer = (state = taskSavingDefaultState, action) => {
+    switch (action.type) {
+        case SAVE_TASK_RESULT: {
+            return {
+                ...state,
+                identifier: action.serverResponseData.identifier,
+                type: action.serverResponseData.type,
+                title: action.serverResponseData.title
+            }
+            break;
+        }
+        default:
+            return state;
+    }
 }
 
 
