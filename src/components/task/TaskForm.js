@@ -7,6 +7,10 @@ import Select from "@material-ui/core/Select";
 import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
 
 const types = [
     {title: "UNKNOWN", code: 0},
@@ -14,7 +18,7 @@ const types = [
     {title: "TESTING", code: 22},
     {title: "DOCUMENT", code: 23}
 ];
- const statuses = [
+const statuses = [
     {title: "UNKNOWN", code: 0},
     {title: "ON_TIME", code: 11},
     {title: "DELAYING", code: 12},
@@ -29,6 +33,11 @@ const stages = [
 ]
 
 export const TaskForm = props => {
+    const [tabValue, setTabValue] = React.useState(0);
+
+    const handleTabChange = (event, newValue) => {
+        setTabValue(newValue);
+    };
 
     const cancelForm = () => {
         this.props.history.push("/home");
@@ -86,36 +95,93 @@ export const TaskForm = props => {
         />
     )
 
-    return (<div>
-            <form onSubmit={props.handleSubmitFunction}>
-                <Grid container spacing={1} style={{marginTop: 100, marginLeft: 50}}>
-                    <Field name="typeCode" component={renderSelectField}>
-                        {types.map(row => (
-                            <MenuItem key={row.code} value={row.code}>{row.title}</MenuItem>))}
-                    </Field>
+    const Tab1 = () => {
+        return (<div index={1}>
+                <Grid container justify="center" style={{marginTop: 30, marginLeft: 50}}>
+                    <Grid xs={4} alignItems="flex-end">
+                        <Typography variant="h6" gutterBottom align="right" style={{marginRight: 10}}>Type</Typography>
+                    </Grid>
+                    <Grid xs={8} align="left">
+                        <Field name="typeCode" component={renderSelectField}>
+                            {types.map(row => (
+                                <MenuItem key={row.code} value={row.code}>{row.title}</MenuItem>))}
+                        </Field>
+                    </Grid>
                 </Grid>
-                <Grid container spacing={1} style={{marginTop: 20, marginLeft: 50}}>
-                    <Field name="statusCode" component={renderSelectField}>
-                        {statuses.map(row => (
-                            <MenuItem key={row.code} value={row.code}>{row.title}</MenuItem>))}
-                    </Field>
+                <Grid container style={{marginTop: 20, marginLeft: 50}}>
+                    <Grid xs={4} alignItems="flex-end">
+                        <Typography variant="h6" gutterBottom align="right"
+                                    style={{marginRight: 10}}>Status</Typography>
+                    </Grid>
+                    <Grid xs={8} align="left">
+                        <Field name="statusCode" component={renderSelectField}>
+                            {statuses.map(row => (
+                                <MenuItem key={row.code} value={row.code}>{row.title}</MenuItem>))}
+                        </Field>
+                    </Grid>
                 </Grid>
-                <Grid container spacing={1} style={{marginTop: 20, marginLeft: 50}}>
-                    <Field name="stageCode" component={renderSelectField} label="Stage">
-                        {stages.map(row => (
-                            <MenuItem key={row.code} value={row.code}>{row.title}</MenuItem>))}
-                    </Field>
+                <Grid container style={{marginTop: 20, marginLeft: 50}}>
+                    <Grid xs={4} alignItems="flex-end">
+                        <Typography variant="h6" gutterBottom align="right" style={{marginRight: 10}}>Stage</Typography>
+                    </Grid>
+                    <Grid xs={8} align="left">
+                        <Field name="stageCode" component={renderSelectField} label="Stage">
+                            {stages.map(row => (
+                                <MenuItem key={row.code} value={row.code}>{row.title}</MenuItem>))}
+                        </Field>
+                    </Grid>
                 </Grid>
-                <Grid container spacing={1} style={{marginTop: 20, marginLeft: 50}}>
-                    <Field name="deadline" component={renderDateField}/>
+                <Grid container style={{marginTop: 20, marginLeft: 50}}>
+                    <Grid xs={4} alignItems="flex-end">
+                        <Typography variant="h6" gutterBottom align="right"
+                                    style={{marginRight: 10}}>Deadline</Typography>
+                    </Grid>
+                    <Grid xs={8} align="left">
+                        <Field name="deadline" component={renderDateField}/>
+                    </Grid>
                 </Grid>
-                <Grid container spacing={1} style={{marginTop: 20, marginLeft: 50}}>
-                    <Field name="assigneeId" component={renderComboboxField}/>
+                <Grid container style={{marginTop: 20, marginLeft: 50}}>
+                    <Grid xs={4} alignItems="flex-end">
+                        <Typography variant="h6" gutterBottom align="right"
+                                    style={{marginRight: 10}}>Assignee</Typography>
+                    </Grid>
+                    <Grid xs={8}>
+                        <Field name="assigneeId" component={renderComboboxField}/>
+                    </Grid>
                 </Grid>
-                <Grid container spacing={1} style={{marginTop: 20, marginLeft: 50}} label="Description">
+                <Grid container style={{marginTop: 20, marginLeft: 50}}>
+                    <Typography variant="h6" gutterBottom>Description</Typography>
+                </Grid>
+                <Grid container style={{marginLeft: 50}}>
                     <Field name="description" component={renderMultiTextField}/>
                 </Grid>
-                <Grid container spacing={1} style={{marginTop: 20, marginLeft: 50}}>
+            </div>
+        )
+    }
+
+    const Tab2 = () => {
+        return (<div index={2}>
+            <Grid container justify="center" style={{marginTop: 30, marginLeft: 50}}>
+                Tab 2
+            </Grid>
+        </div>)
+    }
+
+    return (
+        <Grid container spacing={1}>
+            <form onSubmit={props.handleSubmitFunction}>
+                <Paper>
+                    <Tabs value={tabValue}
+                          onChange={handleTabChange}
+                          aria-label="simple tabs example"
+                          style={{marginTop: 20}}>
+                        <Tab label="Common properties"/>
+                        <Tab label="ACL"/>
+                    </Tabs>
+                </Paper>
+                {tabValue === 0 && <Tab1/> }
+                {tabValue === 1 && <Tab2/> }
+                <Grid container style={{marginTop: 20, marginLeft: 50}}>
                     <div>
                         <Button
                             variant="contained"
@@ -129,6 +195,6 @@ export const TaskForm = props => {
                     </div>
                 </Grid>
             </form>
-        </div>
+        </Grid>
     );
 };

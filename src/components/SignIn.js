@@ -17,19 +17,6 @@ class SignIn extends React.Component {
         this.submitLogin = this.submitLogin.bind(this);
     }
 
-
-    handleUsernameChange = event => {
-        this.setState({
-            user: event.target.value
-        })
-    }
-
-    handlePasswordChange = event => {
-        this.setState({
-            password: event.target.value
-        })
-    }
-
     submitLogin = event => {
         console.log(event);
         event.preventDefault();

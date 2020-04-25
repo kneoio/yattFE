@@ -1,8 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
@@ -10,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import PersonIcon from '@material-ui/icons/Person';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
@@ -17,8 +17,18 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
-import TaskView from "./TaskView";
-
+import TaskView from "./task/TaskView";
+import Button from "@material-ui/core/Button";
+import MenuItem from "@material-ui/core/MenuItem";
+import ClickAwayListener from "@material-ui/core/ClickAwayListener";
+import Paper from "@material-ui/core/Paper";
+import Grow from "@material-ui/core/Grow";
+import Popper from "@material-ui/core/Popper";
+import MenuList from "@material-ui/core/MenuList";
+import {Link} from "react-router-dom";
+import TableCell from "@material-ui/core/TableCell";
+import Home from "./Home";
+import TaskDocument from "./task/TaskDocument";
 
 const drawerWidth = 240;
 
@@ -45,6 +55,9 @@ const useStyles = makeStyles((theme) => ({
     },
     hide: {
         display: 'none',
+    },
+    title: {
+        flexGrow: 1,
     },
     drawer: {
         width: drawerWidth,
@@ -79,10 +92,19 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function PersistentDrawerLeft() {
+export const Outline = (props) => {
+    console.log("Outline props", props)
+    console.log("Outline props", props.match.path)
+    console.log("Outline props", props.match.params.id)
+    var jwtDecode = require('jwt-decode');
+    var decoded = jwtDecode(sessionStorage.getItem("jwtToken"));
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(true);
+    const [openProfileMenu, setOpenProfileMenu] = React.useState(false);
+    const [userName, setUserName] = React.useState(decoded.sub);
+    const anchorRef = React.useRef(null);
+
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -92,9 +114,65 @@ export default function PersistentDrawerLeft() {
         setOpen(false);
     };
 
+
+    const handleProfileMenuToggle = () => {
+        setOpenProfileMenu((prevOpen) => !prevOpen);
+    };
+
+    const handleProfileMenuClose = (event) => {
+        if (anchorRef.current && anchorRef.current.contains(event.target)) {
+            return;
+        }
+        setOpenProfileMenu(false);
+    };
+
+    const handleProfileMenuListKeyDown = event => {
+        if (event.key === 'Tab') {
+            event.preventDefault();
+            setOpenProfileMenu(false);
+        }
+    }
+
+    const logout = event => {
+        setOpenProfileMenu(false);
+    }
+
+    const prevOpen = React.useRef(openProfileMenu);
+    React.useEffect(() => {
+        if (prevOpen.current === true && openProfileMenu === false) {
+            anchorRef.current.focus();
+        }
+
+        prevOpen.current = openProfileMenu;
+    }, [openProfileMenu]);
+
+    const ProfileMenu = props => {
+        return (
+            <div>
+                <Popper open={openProfileMenu} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
+                    {({TransitionProps, placement}) => (
+                        <Grow
+                            {...TransitionProps}
+                            style={{transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom'}}
+                        >
+                            <Paper>
+                                <ClickAwayListener onClickAway={handleProfileMenuClose}>
+                                    <MenuList autoFocusItem={openProfileMenu} id="menu-list-grow"
+                                              onKeyDown={handleProfileMenuListKeyDown}>
+                                        <MenuItem component={Link} to="/my_account">My account</MenuItem>
+                                        <MenuItem onClick={logout}>Logout</MenuItem>
+                                    </MenuList>
+                                </ClickAwayListener>
+                            </Paper>
+                        </Grow>
+                    )}
+                </Popper>
+            </div>
+        );
+    }
+
     return (
         <div className={classes.root}>
-            <CssBaseline />
             <AppBar
                 position="fixed"
                 className={clsx(classes.appBar, {
@@ -109,11 +187,20 @@ export default function PersistentDrawerLeft() {
                         edge="start"
                         className={clsx(classes.menuButton, open && classes.hide)}
                     >
-                        <MenuIcon />
+                        <MenuIcon/>
                     </IconButton>
-                    <Typography variant="h6" noWrap>
+                    <Typography variant="h6" className={classes.title}>
                         YATT
                     </Typography>
+                    <Button
+                        ref={anchorRef}
+                        aria-controls={open ? 'menu-list-grow' : undefined}
+                        aria-haspopup="true"
+                        onClick={handleProfileMenuToggle}
+                        color="inherit">
+                        <PersonIcon style={{marginRight: 10}}/>{userName}
+                    </Button>
+                    <ProfileMenu/>
                 </Toolbar>
             </AppBar>
             <Drawer
@@ -127,24 +214,24 @@ export default function PersistentDrawerLeft() {
             >
                 <div className={classes.drawerHeader}>
                     <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                        {theme.direction === 'ltr' ? <ChevronLeftIcon/> : <ChevronRightIcon/>}
                     </IconButton>
                 </div>
-                <Divider />
+                <Divider/>
                 <List>
                     {['All tasks'].map((text, index) => (
                         <ListItem button key={text}>
-                            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                            <ListItemText primary={text} />
+                            <ListItemIcon>{index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}</ListItemIcon>
+                            <ListItemText primary={text}/>
                         </ListItem>
                     ))}
                 </List>
-                <Divider />
+                <Divider/>
                 <List>
                     {['Users'].map((text, index) => (
                         <ListItem button key={text}>
-                            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                            <ListItemText primary={text} />
+                            <ListItemIcon>{index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}</ListItemIcon>
+                            <ListItemText primary={text}/>
                         </ListItem>
                     ))}
                 </List>
@@ -154,9 +241,13 @@ export default function PersistentDrawerLeft() {
                     [classes.contentShift]: open,
                 })}
             >
-                <div className={classes.drawerHeader} />
-                <TaskView/>
+                <div className={classes.drawerHeader}/>
+                {props.match.path === "/view/:viewName" && props.match.params.viewName === "tasks" && <TaskView/> }
+                {props.match.path === "/document/:id" && <TaskDocument id={props.match.params.id} /> }
             </main>
         </div>
     );
 }
+
+export default Outline;
+

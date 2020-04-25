@@ -4,7 +4,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
-import {fetchTasks} from "../store/tasks/actions";
+import {fetchTasks} from "../../store/tasks/actions";
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -12,8 +12,6 @@ import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import {Link} from "react-router-dom";
 import Alert from "@material-ui/lab/Alert";
-import {logger} from "redux-logger/src";
-
 
 class TaskView extends React.Component {
 

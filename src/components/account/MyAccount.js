@@ -7,12 +7,17 @@ import {fetchTask, saveTask} from "../../store/task/actions";
 import {fetchAssignees} from "../../store/assignees/actions";
 import 'date-fns';
 import Alert from "@material-ui/lab/Alert";
-import {TaskForm} from "./TaskForm";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
 import Paper from "@material-ui/core/Paper";
+import Grid from "@material-ui/core/Grid";
+import Toolbar from "@material-ui/core/Toolbar";
+import IconButton from "@material-ui/core/IconButton";
+import AppBar from "@material-ui/core/AppBar";
+import Typography from "@material-ui/core/Typography";
+import MenuIcon from "@material-ui/icons/Menu";
 
-class TaskDocument extends React.Component {
+class MyAccount extends React.Component {
 
     state = {
         taskDocument: {},
@@ -27,10 +32,14 @@ class TaskDocument extends React.Component {
 
     componentDidMount() {
         this.props.fetchTask(this.props.match.params.id);
-        this.props.fetchAssignees();
     }
 
+    handleChange = (event, newValue) => {
+        this.state.value = newValue;
+    };
+
     saveForm(formData) {
+        console.log('form data to send:', formData.description);
         this.props.saveTask({
             id: this.props.id,
             description: formData.description,
@@ -43,30 +52,43 @@ class TaskDocument extends React.Component {
         //this.cancelForm();
     }
 
-
     render() {
         let message = '';
+        console.log(this.props.response.type)
         if (this.props.response.type === 'ERROR') {
             message = <Alert severity="error" style={{marginTop: 15}}>{this.props.response.title}</Alert>
         } else {
-            // message = <Alert severity="info" style={{marginTop: 15}}>Saved successfully</Alert>
+            message = <Alert severity="info" style={{marginTop: 15}}>Saved successfully</Alert>
         }
         const {handleSubmit} = this.props
         return (
             <div>
-                <Grid style={{marginTop: 5, marginLeft: 10}}>
+                <AppBar>
+                    <Toolbar>
+                        <IconButton
+                            color="inherit"
+                            aria-label="open drawer"
+                            edge="start"
+                        >
+                            <MenuIcon/>
+                        </IconButton>
+                        <Typography variant="h6" noWrap>
+                            YATT
+                        </Typography>
+                    </Toolbar>
+                </AppBar>
+                <Grid container spacing={1} style={{marginTop: 40}}>
                     <Paper>
-                        <Typography variant="h5" mr={5} align="left">{this.props.pageName}</Typography>
+                        <Tabs value={this.value}
+                              onChange={this.handleChange}
+                              aria-label="simple tabs example"
+                              style={{marginTop: 20}}>
+                            <Tab label="Common properties"/>
+                            <Tab label="ACL"/>
+                        </Tabs>
                     </Paper>
                 </Grid>
-                <Grid>
-                    <TaskForm
-                        value="1"
-                        handleSubmitFunction={handleSubmit(this.saveForm)}
-                        saveHandler={this.saveForm}
-                        allAssignees={this.props.allAssignees}
-                        hidden={this.value !== this.index}
-                    />
+                <Grid container spacing={1}>
                 </Grid>
                 {message}
             </div>
@@ -74,7 +96,7 @@ class TaskDocument extends React.Component {
     }
 }
 
-TaskDocument.propTypes = {
+MyAccount.propTypes = {
     fetchTask: PropTypes.func.isRequired,
     saveTask: PropTypes.func.isRequired,
     fetchAssignees: PropTypes.func.isRequired
@@ -84,8 +106,6 @@ const mapStateToProps = state => ({
     allAssignees: state.assignees.serverPage,
     response: state.saving,
     id: state.servEntity.payload.id,
-    pageName: state.servEntity.pageName,
-    title: state.servEntity.title,
     initialValues: {
         typeCode: state.servEntity.payload.typeCode,
         statusCode: state.servEntity.payload.statusCode,
@@ -96,12 +116,12 @@ const mapStateToProps = state => ({
     }
 });
 
-TaskDocument = reduxForm({
+MyAccount = reduxForm({
     form: 'task_form',
     enableReinitialize: true
-})(TaskDocument);
+})(MyAccount);
 
-export default connect(mapStateToProps, {fetchTask, saveTask, fetchAssignees})(withRouter(TaskDocument));
+export default connect(mapStateToProps, {fetchTask, saveTask, fetchAssignees})(withRouter(MyAccount));
 
 
 

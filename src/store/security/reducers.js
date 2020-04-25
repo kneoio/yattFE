@@ -3,9 +3,7 @@ import {LOGIN} from "../security/actions";
 const defaultState = {
     serverPage: {
         type: '',
-        pageName: '',
-        title: '',
-        payload: null
+        title: ''
     }
 }
 

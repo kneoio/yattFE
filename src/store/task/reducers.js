@@ -37,6 +37,7 @@ export const taskReducer = (state = taskDefaultState, action) => {
                 identifier: action.serverResponseData.identifier,
                 type: action.serverResponseData.type,
                 title: action.serverResponseData.title,
+                pageName: action.serverResponseData.pageName,
                 payload: action.serverResponseData.payload
             }
             break;

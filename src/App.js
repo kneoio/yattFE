@@ -8,11 +8,11 @@ import {
     Route
 } from "react-router-dom";
 import Outline from './components/Outline'
-import AboutPage from "./components/AboutPage";
-import Error from "./components/Error";
+import AboutPage from "./components/about/AboutPage";
+import Error from "./components/error/Error";
 import TaskDocument from "./components/task/TaskDocument";
 import SignIn from "./components/SignIn";
-import TaskView from "./components/TaskView";
+import MyAccount from "./components/account/MyAccount";
 
 
 function App() {
@@ -24,11 +24,13 @@ function App() {
                         <Route path="/" exact component={Outline}/>
                         <Route path="/outline" exact component={Outline}/>
                         <Route path="/home" exact component={Outline}/>
-                        <Route path="/tasks" exact component={TaskView}/>
-                        <Route path="/document/:id" exact component={TaskDocument}/>
+                        <Route path="/tasks" exact component={Outline}/>
+                        <Route path="/view/:viewName" exact component={Outline}/>
+                        <Route path="/document/:id" exact component={Outline}/>
                         <Route path="/about" exact component={AboutPage}/>
                         <Route path="/sign_in" exact component={SignIn}/>
                         <Route path="/error/:message" exact component={Error}/>
+                        <Route path="/my_account" exact component={MyAccount}/>
                         <Route path="/" component={ Error}/>
                     </Switch>
                 </div>
