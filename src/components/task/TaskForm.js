@@ -11,6 +11,17 @@ import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
+import Table from "@material-ui/core/Table";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import TableBody from "@material-ui/core/TableBody";
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import {Link} from "react-router-dom";
+import TableContainer from "@material-ui/core/TableContainer";
+import {green} from '@material-ui/core/colors';
+import red from "@material-ui/core/colors/red";
+import Badge from "@material-ui/core/Badge";
 
 const types = [
     {title: "UNKNOWN", code: 0},
@@ -40,7 +51,9 @@ export const TaskForm = props => {
     };
 
     const cancelForm = () => {
-        this.props.history.push("/home");
+        const { history } = props;
+        history.push("/view/tasks");
+
     }
 
     const renderSelectField = ({input, label, meta: {touched, error}, children, ...custom}) => (
@@ -79,7 +92,7 @@ export const TaskForm = props => {
             {...custom}
         >
             {props.allAssignees.payload.result.map(row => (
-                <option value={row.id}>{row.title}</option>))}
+                <option value={row.id} key={row.id}>{row.title}</option>))}
         </Select>
     )
 
@@ -159,10 +172,64 @@ export const TaskForm = props => {
         )
     }
 
-    const Tab2 = () => {
+    const Tab2 = (props) => {
         return (<div index={2}>
             <Grid container justify="center" style={{marginTop: 30, marginLeft: 50}}>
-                Tab 2
+                <Grid xs={4} alignItems="flex-end">
+                    <Typography variant="h6" gutterBottom align="right" style={{marginRight: 10}}>Author</Typography>
+                </Grid>
+                <Grid xs={8} align="left" style={{width: 500}} gutterBottom>
+                    <Typography variant="button" gutterBottom>{props.acl.authorName}</Typography>
+                </Grid>
+            </Grid>
+            <Grid container justify="center" style={{marginTop: 30, marginLeft: 50}}>
+                <Grid xs={4} alignItems="flex-end">
+                    <Typography variant="h6" gutterBottom align="right" style={{marginRight: 10}}>Created
+                        at</Typography>
+                </Grid>
+                <Grid xs={8} align="left" style={{width: 500}}>
+                    <Typography variant="button" gutterBottom>{props.acl.regDate}</Typography>
+                </Grid>
+            </Grid>
+            <Grid container justify="center" style={{marginTop: 5, marginLeft: 50}}>
+                <Grid xs={4} alignItems="flex-end">
+                    <Typography variant="h6" gutterBottom align="right" style={{marginRight: 10}}>
+                        Last modification
+                    </Typography>
+                </Grid>
+                <Grid xs={8} align="left" style={{width: 500}}>
+                    <Typography variant="button" gutterBottom></Typography>
+                </Grid>
+            </Grid>
+            <Grid container justify="center" style={{marginTop: 5, marginLeft: 50}}>
+                <TableContainer>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell style={{width: 100}}>User</TableCell>
+                                <TableCell>Can read</TableCell>
+                                <TableCell>Was read at</TableCell>
+                                <TableCell>Can edit</TableCell>
+                                <TableCell>Can delete</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>{props.acl.readers.map(row => (
+                            <TableRow hover key={row.id}>
+                                <TableCell component={Link} to={"/users/" + row.readerName}>
+                                    <Typography>{row.readerName}</Typography>
+                                </TableCell>
+                                <TableCell align="center"><CheckCircleIcon style={{color: green[500]}}/></TableCell>
+                                <TableCell align="center">{row.readingTime}</TableCell>
+                                <TableCell align="center">
+                                    {(row.editAllowed === 1 || row.editAllowed === 2) &&
+                                    <CheckCircleIcon style={{color: green[500]}}/>}
+                                </TableCell>
+                                <TableCell align="center">{row.editAllowed === 2 &&
+                                <CheckCircleIcon style={{color: red[300]}}/>}</TableCell>
+                            </TableRow>
+                        ))}</TableBody>
+                    </Table>
+                </TableContainer>
             </Grid>
         </div>)
     }
@@ -175,12 +242,12 @@ export const TaskForm = props => {
                           onChange={handleTabChange}
                           aria-label="simple tabs example"
                           style={{marginTop: 20}}>
-                        <Tab label="Common properties"/>
+                        <Tab label="properties"/>
                         <Tab label="ACL"/>
                     </Tabs>
                 </Paper>
-                {tabValue === 0 && <Tab1/> }
-                {tabValue === 1 && <Tab2/> }
+                {tabValue === 0 && <Tab1/>}
+                {tabValue === 1 && <Tab2 acl={props.acl}/>}
                 <Grid container style={{marginTop: 20, marginLeft: 50}}>
                     <div>
                         <Button

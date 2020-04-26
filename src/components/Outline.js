@@ -15,8 +15,6 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 import TaskView from "./task/TaskView";
 import Button from "@material-ui/core/Button";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -26,9 +24,14 @@ import Grow from "@material-ui/core/Grow";
 import Popper from "@material-ui/core/Popper";
 import MenuList from "@material-ui/core/MenuList";
 import {Link} from "react-router-dom";
-import TableCell from "@material-ui/core/TableCell";
-import Home from "./Home";
 import TaskDocument from "./task/TaskDocument";
+import PeopleIcon from '@material-ui/icons/People';
+import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
+import blueGrey from "@material-ui/core/colors/blueGrey";
+
+
+
+
 
 const drawerWidth = 240;
 
@@ -93,9 +96,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const Outline = (props) => {
-    console.log("Outline props", props)
-    console.log("Outline props", props.match.path)
-    console.log("Outline props", props.match.params.id)
     var jwtDecode = require('jwt-decode');
     var decoded = jwtDecode(sessionStorage.getItem("jwtToken"));
     const classes = useStyles();
@@ -174,6 +174,7 @@ export const Outline = (props) => {
     return (
         <div className={classes.root}>
             <AppBar
+                style={{background: blueGrey[800]}}
                 position="fixed"
                 className={clsx(classes.appBar, {
                     [classes.appBarShift]: open,
@@ -181,7 +182,6 @@ export const Outline = (props) => {
             >
                 <Toolbar>
                     <IconButton
-                        color="inherit"
                         aria-label="open drawer"
                         onClick={handleDrawerOpen}
                         edge="start"
@@ -220,8 +220,8 @@ export const Outline = (props) => {
                 <Divider/>
                 <List>
                     {['All tasks'].map((text, index) => (
-                        <ListItem button key={text}>
-                            <ListItemIcon>{index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}</ListItemIcon>
+                        <ListItem button key={text} component={Link} to={"/view/tasks"}>
+                            <ListItemIcon><FormatListBulletedIcon/></ListItemIcon>
                             <ListItemText primary={text}/>
                         </ListItem>
                     ))}
@@ -229,8 +229,8 @@ export const Outline = (props) => {
                 <Divider/>
                 <List>
                     {['Users'].map((text, index) => (
-                        <ListItem button key={text}>
-                            <ListItemIcon>{index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}</ListItemIcon>
+                        <ListItem button key={text} component={Link} to={"/view/users"}>
+                            <ListItemIcon><PeopleIcon/></ListItemIcon>
                             <ListItemText primary={text}/>
                         </ListItem>
                     ))}

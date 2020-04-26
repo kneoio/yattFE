@@ -61,11 +61,12 @@ class TaskDocument extends React.Component {
                 </Grid>
                 <Grid>
                     <TaskForm
-                        value="1"
+                        value="2"
                         handleSubmitFunction={handleSubmit(this.saveForm)}
                         saveHandler={this.saveForm}
                         allAssignees={this.props.allAssignees}
                         hidden={this.value !== this.index}
+                        acl={this.props.acl}
                     />
                 </Grid>
                 {message}
@@ -93,7 +94,13 @@ const mapStateToProps = state => ({
         deadline: state.servEntity.payload.deadline,
         assigneeId: state.servEntity.payload.assigneeId,
         description: state.servEntity.payload.description
+    },
+    acl: {
+        authorName: state.servEntity.payload.authorName,
+        regDate: state.servEntity.payload.regDate,
+        readers: state.servEntity.payload.readers
     }
+
 });
 
 TaskDocument = reduxForm({
