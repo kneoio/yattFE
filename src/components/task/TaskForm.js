@@ -21,7 +21,6 @@ import {Link} from "react-router-dom";
 import TableContainer from "@material-ui/core/TableContainer";
 import {green} from '@material-ui/core/colors';
 import red from "@material-ui/core/colors/red";
-import Badge from "@material-ui/core/Badge";
 
 const types = [
     {title: "UNKNOWN", code: 0},
@@ -51,9 +50,7 @@ export const TaskForm = props => {
     };
 
     const cancelForm = () => {
-        const { history } = props;
-        history.push("/view/tasks");
-
+        window.location.replace('/view/tasks');
     }
 
     const renderSelectField = ({input, label, meta: {touched, error}, children, ...custom}) => (
@@ -91,6 +88,7 @@ export const TaskForm = props => {
             {...input}
             {...custom}
         >
+            <option value={"00000000-0000-0000-0000-000000000000"} key={"0"}></option>
             {props.allAssignees.payload.result.map(row => (
                 <option value={row.id} key={row.id}>{row.title}</option>))}
         </Select>
@@ -111,10 +109,10 @@ export const TaskForm = props => {
     const Tab1 = () => {
         return (<div index={1}>
                 <Grid container justify="center" style={{marginTop: 30, marginLeft: 50}}>
-                    <Grid xs={4} alignItems="flex-end">
-                        <Typography variant="h6" gutterBottom align="right" style={{marginRight: 10}}>Type</Typography>
+                    <Grid xs={4} item={true}>
+                        <Typography variant="h6" align="right" style={{marginRight: 10}}>Type</Typography>
                     </Grid>
-                    <Grid xs={8} align="left">
+                    <Grid xs={8} align="left" item={true}>
                         <Field name="typeCode" component={renderSelectField}>
                             {types.map(row => (
                                 <MenuItem key={row.code} value={row.code}>{row.title}</MenuItem>))}
@@ -122,11 +120,11 @@ export const TaskForm = props => {
                     </Grid>
                 </Grid>
                 <Grid container style={{marginTop: 20, marginLeft: 50}}>
-                    <Grid xs={4} alignItems="flex-end">
-                        <Typography variant="h6" gutterBottom align="right"
+                    <Grid xs={4} item={true}>
+                        <Typography variant="h6" align="right"
                                     style={{marginRight: 10}}>Status</Typography>
                     </Grid>
-                    <Grid xs={8} align="left">
+                    <Grid xs={8} align="left" item={true}>
                         <Field name="statusCode" component={renderSelectField}>
                             {statuses.map(row => (
                                 <MenuItem key={row.code} value={row.code}>{row.title}</MenuItem>))}
@@ -134,10 +132,10 @@ export const TaskForm = props => {
                     </Grid>
                 </Grid>
                 <Grid container style={{marginTop: 20, marginLeft: 50}}>
-                    <Grid xs={4} alignItems="flex-end">
-                        <Typography variant="h6" gutterBottom align="right" style={{marginRight: 10}}>Stage</Typography>
+                    <Grid xs={4} item={true}>
+                        <Typography variant="h6"  align="right" style={{marginRight: 10}}>Stage</Typography>
                     </Grid>
-                    <Grid xs={8} align="left">
+                    <Grid xs={8} align="left" item={true}>
                         <Field name="stageCode" component={renderSelectField} label="Stage">
                             {stages.map(row => (
                                 <MenuItem key={row.code} value={row.code}>{row.title}</MenuItem>))}
@@ -145,25 +143,25 @@ export const TaskForm = props => {
                     </Grid>
                 </Grid>
                 <Grid container style={{marginTop: 20, marginLeft: 50}}>
-                    <Grid xs={4} alignItems="flex-end">
-                        <Typography variant="h6" gutterBottom align="right"
+                    <Grid xs={4} item={true}>
+                        <Typography variant="h6" align="right"
                                     style={{marginRight: 10}}>Deadline</Typography>
                     </Grid>
-                    <Grid xs={8} align="left">
+                    <Grid xs={8} align="left" item={true}>
                         <Field name="deadline" component={renderDateField}/>
                     </Grid>
                 </Grid>
                 <Grid container style={{marginTop: 20, marginLeft: 50}}>
-                    <Grid xs={4} alignItems="flex-end">
-                        <Typography variant="h6" gutterBottom align="right"
+                    <Grid xs={4} item={true}>
+                        <Typography variant="h6"  align="right"
                                     style={{marginRight: 10}}>Assignee</Typography>
                     </Grid>
-                    <Grid xs={8}>
+                    <Grid xs={8} item={true}>
                         <Field name="assigneeId" component={renderComboboxField}/>
                     </Grid>
                 </Grid>
                 <Grid container style={{marginTop: 20, marginLeft: 50}}>
-                    <Typography variant="h6" gutterBottom>Description</Typography>
+                    <Typography variant="h6" >Description</Typography>
                 </Grid>
                 <Grid container style={{marginLeft: 50}}>
                     <Field name="description" component={renderMultiTextField}/>
@@ -175,30 +173,30 @@ export const TaskForm = props => {
     const Tab2 = (props) => {
         return (<div index={2}>
             <Grid container justify="center" style={{marginTop: 30, marginLeft: 50}}>
-                <Grid xs={4} alignItems="flex-end">
-                    <Typography variant="h6" gutterBottom align="right" style={{marginRight: 10}}>Author</Typography>
+                <Grid xs={4} item={true}>
+                    <Typography variant="h6"  align="right" style={{marginRight: 10}}>Author</Typography>
                 </Grid>
-                <Grid xs={8} align="left" style={{width: 500}} gutterBottom>
-                    <Typography variant="button" gutterBottom>{props.acl.authorName}</Typography>
-                </Grid>
-            </Grid>
-            <Grid container justify="center" style={{marginTop: 30, marginLeft: 50}}>
-                <Grid xs={4} alignItems="flex-end">
-                    <Typography variant="h6" gutterBottom align="right" style={{marginRight: 10}}>Created
-                        at</Typography>
-                </Grid>
-                <Grid xs={8} align="left" style={{width: 500}}>
-                    <Typography variant="button" gutterBottom>{props.acl.regDate}</Typography>
+                <Grid xs={8} align="left" item={true} style={{width: 500}} gutterbottom>
+                    <Typography variant="button" >{props.acl.authorName}</Typography>
                 </Grid>
             </Grid>
             <Grid container justify="center" style={{marginTop: 5, marginLeft: 50}}>
-                <Grid xs={4} alignItems="flex-end">
-                    <Typography variant="h6" gutterBottom align="right" style={{marginRight: 10}}>
+                <Grid xs={4} item={true}>
+                    <Typography variant="h6" align="right" style={{marginRight: 10}}>Created
+                        at</Typography>
+                </Grid>
+                <Grid xs={8} item={true} align="left" style={{width: 500}}>
+                    <Typography variant="button" >{props.acl.regDate}</Typography>
+                </Grid>
+            </Grid>
+            <Grid container justify="center" style={{marginTop: 5, marginLeft: 50}}>
+                <Grid xs={4} item={true}>
+                    <Typography variant="h6" align="right" style={{marginRight: 10}}>
                         Last modification
                     </Typography>
                 </Grid>
-                <Grid xs={8} align="left" style={{width: 500}}>
-                    <Typography variant="button" gutterBottom></Typography>
+                <Grid xs={8} item={true} align="left" style={{width: 500}}>
+                    <Typography variant="button"></Typography>
                 </Grid>
             </Grid>
             <Grid container justify="center" style={{marginTop: 5, marginLeft: 50}}>

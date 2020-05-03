@@ -21,7 +21,7 @@ function App() {
             <Router>
                 <div className="App">
                     <Switch>
-                        <Route path="/" exact component={Outline}/>
+                        <Route path="/" exact component={SignIn}/>
                         <Route path="/outline" exact component={Outline}/>
                         <Route path="/home" exact component={Outline}/>
                         <Route path="/tasks" exact component={Outline}/>

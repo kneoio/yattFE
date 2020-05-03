@@ -4,7 +4,7 @@ export const GET_TASKS = "GET_TASKS";
 
 export const fetchTasks = (size, page) => dispatch => {
     const connectSession = axios.create({
-        timeout: 10000,
+        //timeout: 10000,
         withCredentials: true,
         headers: {
             'Accept': 'application/json',
@@ -35,7 +35,7 @@ export const fetchTasks = (size, page) => dispatch => {
                     )
                 }
             } else {
-                window.location.replace('/sign_in');
+               // window.location.replace('/sign_in');
             }
         })
 }

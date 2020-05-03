@@ -11,6 +11,7 @@ import {TaskForm} from "./TaskForm";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
+import Chip from "@material-ui/core/Chip";
 
 class TaskDocument extends React.Component {
 
@@ -34,7 +35,7 @@ class TaskDocument extends React.Component {
         this.props.saveTask({
             id: this.props.id,
             description: formData.description,
-            assignee: Number(formData.assigneeId),
+            assigneeId: formData.assigneeId,
             deadline: formData.deadline,
             stageCode: formData.stageCode,
             statusCode: formData.statusCode,
@@ -47,16 +48,25 @@ class TaskDocument extends React.Component {
     render() {
         let message = '';
         if (this.props.response.type === 'ERROR') {
-            message = <Alert severity="error" style={{marginTop: 15}}>{this.props.response.title}</Alert>
+            message = <Alert
+                severity="error"
+                style={{marginTop: 15}}>{this.props.response.title + " " + this.props.response.payload.debugMessage}
+            </Alert>
         } else {
             // message = <Alert severity="info" style={{marginTop: 15}}>Saved successfully</Alert>
         }
-        const {handleSubmit} = this.props
+        const {handleSubmit, isNew} = this.props
         return (
             <div>
                 <Grid style={{marginTop: 5, marginLeft: 10}}>
                     <Paper>
-                        <Typography variant="h5" mr={5} align="left">{this.props.pageName}</Typography>
+                        <Typography
+                            variant="h5"
+                            mr={5}
+                            align="left">
+                            {this.props.pageName}
+                            {isNew && <Chip  style={{marginLeft:10, marginBottom:10}} variant="outlined" size="small" label="new"/>}
+                        </Typography>
                     </Paper>
                 </Grid>
                 <Grid>
@@ -87,6 +97,7 @@ const mapStateToProps = state => ({
     id: state.servEntity.payload.id,
     pageName: state.servEntity.pageName,
     title: state.servEntity.title,
+    isNew: state.servEntity.payload.new,
     initialValues: {
         typeCode: state.servEntity.payload.typeCode,
         statusCode: state.servEntity.payload.statusCode,

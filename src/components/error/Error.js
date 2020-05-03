@@ -46,7 +46,6 @@ export default function Error(props) {
                         {props.match.params.message}
                     </Typography>
                 </Grid>
-                <Grid item xs={1}/>
             </Grid>
         </div>
     )

@@ -13,6 +13,7 @@ export const fetchTask = (id) => dispatch => {
             'Authorization': sessionStorage.getItem("jwtToken")
         }
     });
+    console.log('request tasks =', id)
     let URL = 'http://silverbox.example.com:8080/tasks/' + id;
     connectSession.get(URL)
         .then(response => {
@@ -38,8 +39,9 @@ export const saveTask = (task) => dispatch => {
     let URL = 'http://silverbox.example.com:8080/tasks/';
     connectSession.post(URL, task)
         .then(response => {
-            console.log('the task save result=',response.data)
-            dispatch(saveTaskResult(response.data))
+            console.log('the task save result=',response.data.pageName)
+            dispatch(saveTaskResult(response.data));
+            fetchTask(response.data.pageName);
             //this.props.history.push("/home");
         })
         .catch(error => {

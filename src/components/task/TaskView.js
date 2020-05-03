@@ -12,40 +12,59 @@ import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import {Link} from "react-router-dom";
 import Alert from "@material-ui/lab/Alert";
+import Fab from "@material-ui/core/Fab";
+import AddIcon from '@material-ui/icons/Add';
 
 class TaskView extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            count: 0,
-            pageSize: 20,
-            page: 0,
-            isSignedUp: false
-        };
+            pageSize: 20
+        }
     }
 
     componentDidMount() {
-        this.props.fetchTasks(this.state.pageSize, this.state.page);
+        this.props.fetchTasks(this.state.pageSize, 0);
+    }
+
+    handleChangePage = (event, page) => {
+        console.log("change page", this.state.pageSize)
+        this.props.fetchTasks(this.state.pageSize, page);
+    };
+
+    handleChangeRowsPerPage = (event) => {
+        let size = parseInt(event.target.value, 10);
+        this.setState({
+            pageSize: size
+        })
+        this.props.fetchTasks(size, 0);
     }
 
     render() {
-        if (this.props.tasks.type === ''){
+        if (this.props.viewPage.type === '') {
             return (<Alert>loading</Alert>);
-        } else if (this.props.tasks.type === 'ERROR'){
-            return (<Alert severity="error">{this.props.tasks.title}</Alert>)
+        } else if (this.props.viewPage.type === 'ERROR') {
+            return (<Alert severity="error">{this.props.viewPage.title}</Alert>)
         }
-        let viewPage = this.props.tasks.payload;
-        let rows = viewPage.result;
+        let view = this.props.viewPage.payload;
+        let rows = view.result;
         if (!rows) {
             return (<Alert>Loading ...</Alert>);
         }
-        return(
+        return (
             <TableContainer>
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TaskTablePagination view={viewPage}/>
+                            <Fab style={{marginLeft: 30, marginTop: 10}}
+                                 variant={"extended"}
+                                 component={Link}
+                                 to={"/document/new"}><AddIcon/>&nbsp;Create</Fab>
+                            <TaskTablePagination
+                                view={view}
+                                handleChangePage={this.handleChangePage}
+                                handleChangeRowsPerPage={this.handleChangeRowsPerPage}/>
                         </TableRow>
                         <TableRow>
                             <TableCell>#</TableCell>
@@ -56,16 +75,18 @@ class TaskView extends React.Component {
                             <TableCell>Deadline</TableCell>
                         </TableRow>
                     </TableHead>
-                    <TableBody>{rows.map(row =>(
-                        <TableRow hover  key={row.id}>
-                            <TableCell padding="checkbox"><Checkbox/></TableCell>
-                            <TableCell component={Link} to={"/document/" + row.id}>{row.title}</TableCell>
-                            <TableCell align="right">{row.typeCode}</TableCell>
-                            <TableCell align="right">{row.statusCode}</TableCell>
-                            <TableCell align="right">{row.stageCode}</TableCell>
-                            <TableCell align="right">{row.deadline}</TableCell>
-                        </TableRow>
-                    ))}</TableBody>
+                    <TableBody>
+                        {rows.map(row => {
+                            return <TableRow key={row.id}>
+                                <TableCell padding="checkbox"><Checkbox/></TableCell>
+                                <TableCell component={Link} to={"/document/" + row.id}>{row.title}</TableCell>
+                                <TableCell>{row.typeCode}</TableCell>
+                                <TableCell>{row.statusCode}</TableCell>
+                                <TableCell>{row.stageCode}</TableCell>
+                                <TableCell>{row.deadline}</TableCell>
+                            </TableRow>
+                        })}
+                    </TableBody>
                 </Table>
             </TableContainer>
         )
@@ -75,46 +96,28 @@ class TaskView extends React.Component {
 class TaskTablePagination extends React.Component {
     constructor(props) {
         super(props);
-        this.handleChangePage = this.handleChangePage.bind(this);
-    }
-
-    handleChangePage(event, page) {
-        this.props.fetchTasks(this.state.pageSize, page);
-        this.setState({
-            page: page
-        })
-    };
-
-    handleChangeRowsPerPage = (event) => {
-        let size = parseInt(event.target.value, 10);
-        this.setState({
-            pageSize: size
-        })
-        this.props.fetchTasks(size, 1);
     }
 
     render() {
-        let viewPage = this.props.view;
-        console.log(viewPage.pageNum)
+        const { count, pageSize, pageNum } = this.props.view;
         return (
             <TablePagination
-                rowsPerPageOptions={[20, 50, 100, {value: -1, label: 'All'}]}
-                count={viewPage.count}
-                rowsPerPage={viewPage.pageSize}
-                page={viewPage.pageNum}
-                onChangePage={this.handleChangePage}
-                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                rowsPerPageOptions={[10, 20, 50, 100, {value: -1, label: 'All'}]}
+                count={count}
+                rowsPerPage={pageSize}
+                page={pageNum}
+                onChangePage={this.props.handleChangePage}
+                onChangeRowsPerPage={this.props.handleChangeRowsPerPage}
             />)
     }
 }
 
 TaskView.propTypes = {
-    fetchTasks: PropTypes.func.isRequired,
-    tasks: PropTypes.object.isRequired
+    fetchTasks: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-    tasks: state.tasks.serverPage,
+    viewPage: state.tasks.serverPage,
 });
 
 

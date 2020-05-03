@@ -25,7 +25,8 @@ const taskSavingDefaultState = {
     identifier: null,
     type: null,
     pageName: null,
-    title: null
+    title: null,
+    payload: {}
 }
 
 
@@ -54,7 +55,8 @@ export const saveTaskReducer = (state = taskSavingDefaultState, action) => {
                 ...state,
                 identifier: action.serverResponseData.identifier,
                 type: action.serverResponseData.type,
-                title: action.serverResponseData.title
+                title: action.serverResponseData.title,
+                payload: action.serverResponseData.payload
             }
             break;
         }

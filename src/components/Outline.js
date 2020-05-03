@@ -30,9 +30,6 @@ import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import blueGrey from "@material-ui/core/colors/blueGrey";
 
 
-
-
-
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -134,6 +131,8 @@ export const Outline = (props) => {
     }
 
     const logout = event => {
+        sessionStorage.removeItem("jwtToken");
+        window.location.replace('/sign_in');
         setOpenProfileMenu(false);
     }
 
@@ -174,7 +173,7 @@ export const Outline = (props) => {
     return (
         <div className={classes.root}>
             <AppBar
-                style={{background: blueGrey[800]}}
+                style={{background: "#169ccc"}}
                 position="fixed"
                 className={clsx(classes.appBar, {
                     [classes.appBarShift]: open,
@@ -190,7 +189,7 @@ export const Outline = (props) => {
                         <MenuIcon/>
                     </IconButton>
                     <Typography variant="h6" className={classes.title}>
-                        YATT
+                        JUKA
                     </Typography>
                     <Button
                         ref={anchorRef}
@@ -219,6 +218,10 @@ export const Outline = (props) => {
                 </div>
                 <Divider/>
                 <List>
+                    <ListItem button key={'Created by me'} component={Link} to={"/view/my_tasks"}>
+                        <ListItemIcon><FormatListBulletedIcon/></ListItemIcon>
+                        <ListItemText primary={'Created by me'}/>
+                    </ListItem>
                     {['All tasks'].map((text, index) => (
                         <ListItem button key={text} component={Link} to={"/view/tasks"}>
                             <ListItemIcon><FormatListBulletedIcon/></ListItemIcon>
@@ -242,8 +245,8 @@ export const Outline = (props) => {
                 })}
             >
                 <div className={classes.drawerHeader}/>
-                {props.match.path === "/view/:viewName" && props.match.params.viewName === "tasks" && <TaskView/> }
-                {props.match.path === "/document/:id" && <TaskDocument id={props.match.params.id} /> }
+                {props.match.path === "/view/:viewName" && props.match.params.viewName === "tasks" && <TaskView/>}
+                {props.match.path === "/document/:id" && <TaskDocument id={props.match.params.id}/>}
             </main>
         </div>
     );
