@@ -1,4 +1,4 @@
-import {GET_TASK, SAVE_TASK_RESULT} from "./actions";
+import {GET_TASK, INFO, SAVE_TASK_RESULT, VALIDATION_ERROR} from "./actions";
 
 const taskDefaultState = {
     identifier: null,
@@ -16,17 +16,21 @@ const taskDefaultState = {
         stage: "",
         description: "",
         deadline: "",
-        assignee: ""
-
+        assignee: "",
+        fields: null
     }
 }
 
-const taskSavingDefaultState = {
-    identifier: null,
-    type: null,
-    pageName: null,
-    title: null,
-    payload: {}
+
+const saveTaskDefaultState = {
+    serverPage: {
+        identifier: null,
+        type: null,
+        title: null,
+        payload: {
+            errorFields: null
+        }
+    }
 }
 
 
@@ -48,7 +52,7 @@ export const taskReducer = (state = taskDefaultState, action) => {
     }
 }
 
-export const saveTaskReducer = (state = taskSavingDefaultState, action) => {
+export const saveTaskReducer = (state = saveTaskDefaultState, action) => {
     switch (action.type) {
         case SAVE_TASK_RESULT: {
             return {
@@ -57,6 +61,20 @@ export const saveTaskReducer = (state = taskSavingDefaultState, action) => {
                 type: action.serverResponseData.type,
                 title: action.serverResponseData.title,
                 payload: action.serverResponseData.payload
+            }
+            break;
+        }
+        case VALIDATION_ERROR: {
+            return {
+                ...state,
+                serverPage: action.serverResponseData
+            }
+            break;
+        }
+        case INFO: {
+            return {
+                ...state,
+                serverPage: action.serverResponseData
             }
             break;
         }

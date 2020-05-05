@@ -12,13 +12,15 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import Chip from "@material-ui/core/Chip";
+import Collapse from "@material-ui/core/Collapse";
 
 class TaskDocument extends React.Component {
 
     state = {
         taskDocument: {},
         value: 1,
-        index: 0
+        index: 0,
+        alertOpen: true
     }
 
     constructor(props) {
@@ -29,6 +31,14 @@ class TaskDocument extends React.Component {
     componentDidMount() {
         this.props.fetchTask(this.props.match.params.id);
         this.props.fetchAssignees();
+    }
+
+    hideAlert() {
+        setTimeout(
+            this.setState({
+                alertOpen: false
+        }), 3000);
+
     }
 
     saveForm(formData) {
@@ -46,29 +56,31 @@ class TaskDocument extends React.Component {
 
 
     render() {
+        console.log(this.props.response.payload)
         let message = '';
-        if (this.props.response.type === 'ERROR') {
+        if (this.props.response.type === 'VALIDATION_ERROR') {
+            message = <Alert
+                severity="warning"
+                style={{marginTop: 15}}>{this.props.response.title}
+            </Alert>
+        } else if (this.props.response.type === 'ERROR') {
             message = <Alert
                 severity="error"
-                style={{marginTop: 15}}>{this.props.response.title + " " + this.props.response.payload.debugMessage}
+                style={{marginTop: 15}}>{this.props.response.title}
             </Alert>
-        } else {
-            // message = <Alert severity="info" style={{marginTop: 15}}>Saved successfully</Alert>
+        } else if (this.props.response.type === 'INFO') {
+            this.props.response.payload = null
+            message = (<Collapse in={this.state.alertOpen}>
+                <Alert
+                    severity="success"
+                    style={{marginTop: 15}}>
+                    Saved successfully
+                </Alert>
+            </Collapse>);
         }
         const {handleSubmit, isNew} = this.props
         return (
             <div>
-                <Grid style={{marginTop: 5, marginLeft: 10}}>
-                    <Paper>
-                        <Typography
-                            variant="h5"
-                            mr={5}
-                            align="left">
-                            {this.props.pageName}
-                            {isNew && <Chip  style={{marginLeft:10, marginBottom:10}} variant="outlined" size="small" label="new"/>}
-                        </Typography>
-                    </Paper>
-                </Grid>
                 <Grid>
                     <TaskForm
                         value="2"
@@ -77,6 +89,8 @@ class TaskDocument extends React.Component {
                         allAssignees={this.props.allAssignees}
                         hidden={this.value !== this.index}
                         acl={this.props.acl}
+                        pageName={this.props.pageName}
+                        isNew={this.props.isNew}
                     />
                 </Grid>
                 {message}
@@ -93,7 +107,7 @@ TaskDocument.propTypes = {
 
 const mapStateToProps = state => ({
     allAssignees: state.assignees.serverPage,
-    response: state.saving,
+    response: state.saving.serverPage,
     id: state.servEntity.payload.id,
     pageName: state.servEntity.pageName,
     title: state.servEntity.title,

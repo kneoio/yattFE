@@ -14,6 +14,11 @@ import {Link} from "react-router-dom";
 import Alert from "@material-ui/lab/Alert";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from '@material-ui/icons/Add';
+import Grid from "@material-ui/core/Grid";
+import Toolbar from "@material-ui/core/Toolbar";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+import Chip from "@material-ui/core/Chip";
 
 class TaskView extends React.Component {
 
@@ -54,17 +59,31 @@ class TaskView extends React.Component {
         }
         return (
             <TableContainer>
+                <Grid container justify="center">
+                    <Grid xs={6}>
+                        <Toolbar>
+                            <Button
+                                variant="contained"
+                                component={Link}
+                                to={"/document/new"}>
+                                Create
+                            </Button>
+                        </Toolbar>
+                    </Grid>
+                    <Grid xs={6} style={{marginTop: 15}}  align="right">
+                        <TaskTablePagination
+
+                            view={view}
+                            handleChangePage={this.handleChangePage}
+                            handleChangeRowsPerPage={this.handleChangeRowsPerPage}/>
+                    </Grid>
+                </Grid>
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <Fab style={{marginLeft: 30, marginTop: 10}}
-                                 variant={"extended"}
-                                 component={Link}
-                                 to={"/document/new"}><AddIcon/>&nbsp;Create</Fab>
-                            <TaskTablePagination
-                                view={view}
-                                handleChangePage={this.handleChangePage}
-                                handleChangeRowsPerPage={this.handleChangeRowsPerPage}/>
+
+
+
                         </TableRow>
                         <TableRow>
                             <TableCell>#</TableCell>
