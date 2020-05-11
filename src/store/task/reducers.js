@@ -1,37 +1,33 @@
-import {GET_TASK, INFO, SAVE_TASK_RESULT, VALIDATION_ERROR} from "./actions";
+import {GET_TASK, INFO, SAVE_TASK_RESULT, SERVER_ERROR, UPDATE_TASK, VALIDATION_ERROR} from "./actions";
 
 const taskDefaultState = {
-    identifier: null,
-    type: null,
-    pageName: null,
-    title: null,
-    payload: {
-        id: 0,
-        author: 0,
-        regDate: "",
-        lastModifiedDate: "",
-        title: "",
-        type: "",
-        status: "",
-        stage: "",
-        description: "",
-        deadline: "",
-        assignee: "",
-        fields: null
-    }
-}
-
-
-const saveTaskDefaultState = {
     serverPage: {
         identifier: null,
         type: null,
+        pageName: null,
         title: null,
-        payload: {
-            errorFields: null
+        payloads: {
+                task: {
+                    id: null,
+                    author: 0,
+                    regDate: null,
+                    lastModifiedDate: null,
+                    title: "",
+                    typeCode: 0,
+                    statusCode: 0,
+                    priorityCode: 0,
+                    description: "",
+                    deadline: null,
+                    assignee: "",
+                    fields: null,
+                    acl: null,
+                    errorFields: null
+                },
+                actions:  []
         }
     }
 }
+
 
 
 export const taskReducer = (state = taskDefaultState, action) => {
@@ -39,28 +35,21 @@ export const taskReducer = (state = taskDefaultState, action) => {
         case GET_TASK: {
             return {
                 ...state,
-                identifier: action.serverResponseData.identifier,
-                type: action.serverResponseData.type,
-                title: action.serverResponseData.title,
-                pageName: action.serverResponseData.pageName,
-                payload: action.serverResponseData.payload
+                serverPage: action.serverPage
             }
             break;
         }
-        default:
-            return state;
-    }
-}
-
-export const saveTaskReducer = (state = saveTaskDefaultState, action) => {
-    switch (action.type) {
         case SAVE_TASK_RESULT: {
             return {
                 ...state,
-                identifier: action.serverResponseData.identifier,
-                type: action.serverResponseData.type,
-                title: action.serverResponseData.title,
-                payload: action.serverResponseData.payload
+                serverPage: action.serverPage
+            }
+            break;
+        }
+        case UPDATE_TASK: {
+            return {
+                ...state,
+                serverPage: action.serverResponseData
             }
             break;
         }
@@ -78,11 +67,19 @@ export const saveTaskReducer = (state = saveTaskDefaultState, action) => {
             }
             break;
         }
+        case SERVER_ERROR: {
+            return {
+                ...state,
+                serverPage: {
+                   title: action.errorMessage
+                }
+            }
+            break;
+        }
         default:
             return state;
     }
 }
-
 
 
 

@@ -5,11 +5,13 @@ const defaultState = {
         type:'',
         pageName:'',
         title:'',
-        payload: {
-            count: 0,
-            pageSize: 20,
-            pageNum: 0,
-            result:[]
+        payloads: {
+            viewpage: {
+                count: 0,
+                pageSize: 20,
+                pageNum: 0,
+                result: []
+            }
         }
     },
     error: ''

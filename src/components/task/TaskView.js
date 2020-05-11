@@ -12,13 +12,9 @@ import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import {Link} from "react-router-dom";
 import Alert from "@material-ui/lab/Alert";
-import Fab from "@material-ui/core/Fab";
-import AddIcon from '@material-ui/icons/Add';
 import Grid from "@material-ui/core/Grid";
 import Toolbar from "@material-ui/core/Toolbar";
 import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
-import Chip from "@material-ui/core/Chip";
 
 class TaskView extends React.Component {
 
@@ -27,6 +23,7 @@ class TaskView extends React.Component {
         this.state = {
             pageSize: 20
         }
+        console.log(props)
     }
 
     componentDidMount() {
@@ -47,12 +44,12 @@ class TaskView extends React.Component {
     }
 
     render() {
-        if (this.props.viewPage.type === '') {
+        if (this.props.viewpage.type === '') {
             return (<Alert>loading</Alert>);
-        } else if (this.props.viewPage.type === 'ERROR') {
-            return (<Alert severity="error">{this.props.viewPage.title}</Alert>)
+        } else if (this.props.viewpage.type === 'ERROR') {
+            return (<Alert severity="error">{this.props.viewpage.title}</Alert>)
         }
-        let view = this.props.viewPage.payload;
+        let view = this.props.viewpage.payloads.viewpage;
         let rows = view.result;
         if (!rows) {
             return (<Alert>Loading ...</Alert>);
@@ -60,7 +57,7 @@ class TaskView extends React.Component {
         return (
             <TableContainer>
                 <Grid container justify="center">
-                    <Grid xs={6}>
+                    <Grid item xs={6}>
                         <Toolbar>
                             <Button
                                 variant="contained"
@@ -70,9 +67,8 @@ class TaskView extends React.Component {
                             </Button>
                         </Toolbar>
                     </Grid>
-                    <Grid xs={6} style={{marginTop: 15}}  align="right">
+                    <Grid item xs={6} style={{marginTop: 15}}  align="right">
                         <TaskTablePagination
-
                             view={view}
                             handleChangePage={this.handleChangePage}
                             handleChangeRowsPerPage={this.handleChangeRowsPerPage}/>
@@ -82,26 +78,22 @@ class TaskView extends React.Component {
                     <TableHead>
                         <TableRow>
 
-
-
                         </TableRow>
                         <TableRow>
                             <TableCell>#</TableCell>
                             <TableCell>Description</TableCell>
                             <TableCell>Type</TableCell>
                             <TableCell>Status</TableCell>
-                            <TableCell>Stage</TableCell>
                             <TableCell>Deadline</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {rows.map(row => {
-                            return <TableRow key={row.id}>
+                            return <TableRow  key={row.id}>
                                 <TableCell padding="checkbox"><Checkbox/></TableCell>
-                                <TableCell component={Link} to={"/document/" + row.id}>{row.title}</TableCell>
+                                <TableCell component={Link} to={"/document/" + row.id + "/"}>{row.title}</TableCell>
                                 <TableCell>{row.typeCode}</TableCell>
                                 <TableCell>{row.statusCode}</TableCell>
-                                <TableCell>{row.stageCode}</TableCell>
                                 <TableCell>{row.deadline}</TableCell>
                             </TableRow>
                         })}
@@ -113,9 +105,6 @@ class TaskView extends React.Component {
 }
 
 class TaskTablePagination extends React.Component {
-    constructor(props) {
-        super(props);
-    }
 
     render() {
         const { count, pageSize, pageNum } = this.props.view;
@@ -136,7 +125,7 @@ TaskView.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    viewPage: state.tasks.serverPage,
+    viewpage: state.tasks.serverPage,
 });
 
 

@@ -11,8 +11,8 @@ export default combineReducers({
     security: loginReducer,
     profile: getProfile,
     tasks:  tasksReducer,
-    servEntity: taskReducer,
-    saving: saveTaskReducer,
+    taskReducer,
+   // saving: saveTaskReducer,
     assignees: assigneeReducer
 
 

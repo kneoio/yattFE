@@ -9,9 +9,6 @@ import 'date-fns';
 import Alert from "@material-ui/lab/Alert";
 import {TaskForm} from "./TaskForm";
 import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
-import Chip from "@material-ui/core/Chip";
 import Collapse from "@material-ui/core/Collapse";
 
 class TaskDocument extends React.Component {
@@ -42,12 +39,16 @@ class TaskDocument extends React.Component {
     }
 
     saveForm(formData) {
+        let id = this.props.id;
+        if (id === "new") {
+            id = null;
+        }
         this.props.saveTask({
-            id: this.props.id,
+            id: id,
             description: formData.description,
             assigneeId: formData.assigneeId,
             deadline: formData.deadline,
-            stageCode: formData.stageCode,
+            priorityCode: formData.priorityCode,
             statusCode: formData.statusCode,
             typeCode: formData.typeCode
         });
@@ -56,29 +57,33 @@ class TaskDocument extends React.Component {
 
 
     render() {
-        console.log(this.props.response.payload)
+       // console.log('doc prop', this.props)
         let message = '';
-        if (this.props.response.type === 'VALIDATION_ERROR') {
+        if (this.props.responseType === 'VALIDATION_ERROR') {
             message = <Alert
                 severity="warning"
-                style={{marginTop: 15}}>{this.props.response.title}
+                style={{marginTop: 15}}>{this.props.title}
             </Alert>
-        } else if (this.props.response.type === 'ERROR') {
+        } else if (this.props.responseType === 'ERROR') {
             message = <Alert
                 severity="error"
-                style={{marginTop: 15}}>{this.props.response.title}
+                style={{marginTop: 15}}>{this.props.title}
             </Alert>
-        } else if (this.props.response.type === 'INFO') {
-            this.props.response.payload = null
+        } else if (this.props.responseType === 'INFO') {
             message = (<Collapse in={this.state.alertOpen}>
                 <Alert
                     severity="success"
                     style={{marginTop: 15}}>
-                    Saved successfully
+                    {this.props.pageName}
                 </Alert>
             </Collapse>);
+        } else if (this.props.responseType === 'SERVER_ERROR') {
+            message = <Alert
+                severity="error"
+                style={{marginTop: 15}}>{this.props.title}
+            </Alert>
         }
-        const {handleSubmit, isNew} = this.props
+        const {handleSubmit, isNew, actions, statusCode} = this.props
         return (
             <div>
                 <Grid>
@@ -90,7 +95,9 @@ class TaskDocument extends React.Component {
                         hidden={this.value !== this.index}
                         acl={this.props.acl}
                         pageName={this.props.pageName}
-                        isNew={this.props.isNew}
+                        isNew={isNew}
+                        actions={actions}
+                        statusCode={statusCode}
                     />
                 </Grid>
                 {message}
@@ -107,23 +114,23 @@ TaskDocument.propTypes = {
 
 const mapStateToProps = state => ({
     allAssignees: state.assignees.serverPage,
-    response: state.saving.serverPage,
-    id: state.servEntity.payload.id,
-    pageName: state.servEntity.pageName,
-    title: state.servEntity.title,
-    isNew: state.servEntity.payload.new,
+    responseType: state.taskReducer.serverPage.type,
+    statusCode: state.taskReducer.serverPage.payloads.task.statusCode,
+    pageName: state.taskReducer.serverPage.pageName,
+    title: state.taskReducer.serverPage.title,
+    isNew: state.taskReducer.serverPage.payloads.task.new,
+    actions: state.taskReducer.serverPage.payloads.actions,
     initialValues: {
-        typeCode: state.servEntity.payload.typeCode,
-        statusCode: state.servEntity.payload.statusCode,
-        stageCode: state.servEntity.payload.stageCode,
-        deadline: state.servEntity.payload.deadline,
-        assigneeId: state.servEntity.payload.assigneeId,
-        description: state.servEntity.payload.description
+        typeCode: state.taskReducer.serverPage.payloads.task.typeCode,
+        priorityCode: state.taskReducer.serverPage.payloads.task.priorityCode,
+        deadline: state.taskReducer.serverPage.payloads.task.deadline,
+        assigneeId: state.taskReducer.serverPage.payloads.task.assigneeId,
+        description: state.taskReducer.serverPage.payloads.task.description
     },
     acl: {
-        authorName: state.servEntity.payload.authorName,
-        regDate: state.servEntity.payload.regDate,
-        readers: state.servEntity.payload.readers
+        authorName: state.taskReducer.serverPage.payloads.task.authorName,
+        regDate: state.taskReducer.serverPage.payloads.task.regDate,
+        rlsEntries: state.taskReducer.serverPage.payloads.task.acl
     }
 
 });

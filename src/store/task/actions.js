@@ -1,10 +1,10 @@
 import axios from 'axios';
 import React from "react";
-import {GET_TASKS} from "../tasks/actions";
-
 export const GET_TASK = "GET_TASK";
+export const UPDATE_TASK = "UPDATE_TASK";
 export const SAVE_TASK_RESULT = "SAVE_TASK_RESULT";
 export const VALIDATION_ERROR = "VALIDATION_ERROR";
+export const SERVER_ERROR = "SERVER_ERROR";
 export const INFO = "INFO";
 
 export const fetchTask = (id) => dispatch => {
@@ -19,7 +19,8 @@ export const fetchTask = (id) => dispatch => {
     let URL = 'http://silverbox.example.com:8080/tasks/' + id;
     connectSession.get(URL)
         .then(response => {
-            dispatch({type: GET_TASK, serverResponseData: response.data})
+            console.log("response.data of Task",response.data)
+            dispatch({type: GET_TASK, serverPage: response.data})
         })
         .catch(error => {
             console.log(error)
@@ -27,7 +28,7 @@ export const fetchTask = (id) => dispatch => {
 }
 
 export const saveTask = (task) => dispatch => {
-   // console.log('task to save=',task)
+    console.log('task to save=',task)
     const connectSession = axios.create({
         //timeout: 10000,
         withCredentials: true,
@@ -41,13 +42,13 @@ export const saveTask = (task) => dispatch => {
     connectSession.post(URL, task)
         .then(response => {
             console.log('save result=', response.data)
-            dispatch(saveTaskResult(response.data));
+            //dispatch(saveTaskResult(response.data));
+            dispatch({type: UPDATE_TASK, serverResponseData: response.data})
            // fetchTask(response.data.pageName);
             //this.props.history.push("/home");
         })
         .catch(error => {
             console.log('save error ',error)
-            console.log('save error ',error.response.data)
             if (!error.isAxiosError) {
                 if (error.response) {
                     if (error.response.status === 500) {
@@ -63,6 +64,8 @@ export const saveTask = (task) => dispatch => {
                 if (error.response) {
                     if (error.response.data.type === VALIDATION_ERROR) {
                         dispatch(saveTaskResult(error.response.data));
+                    } else {
+                        dispatch({type: SERVER_ERROR, errorMessage: error.response.data.title});
                     }
                 } else {
                     dispatch({

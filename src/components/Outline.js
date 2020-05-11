@@ -27,8 +27,6 @@ import {Link} from "react-router-dom";
 import TaskDocument from "./task/TaskDocument";
 import PeopleIcon from '@material-ui/icons/People';
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
-import blueGrey from "@material-ui/core/colors/blueGrey";
-
 
 const drawerWidth = 240;
 
@@ -99,7 +97,7 @@ export const Outline = (props) => {
     const theme = useTheme();
     const [open, setOpen] = React.useState(true);
     const [openProfileMenu, setOpenProfileMenu] = React.useState(false);
-    const [userName, setUserName] = React.useState(decoded.sub);
+    const [userName] = React.useState(decoded.sub);
     const anchorRef = React.useRef(null);
 
 

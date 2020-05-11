@@ -14,7 +14,6 @@ export const loginReducer  = (state = defaultState, action) => {
                 ...state,
                 serverPage: action.serverResponseData
             }
-            break;
         }
         default:
             return state;
