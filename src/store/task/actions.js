@@ -1,11 +1,9 @@
 import axios from 'axios';
 import React from "react";
+import {SERVER_ERROR, VALIDATION_ERROR} from "../global_actions";
 export const GET_TASK = "GET_TASK";
 export const UPDATE_TASK = "UPDATE_TASK";
 export const SAVE_TASK_RESULT = "SAVE_TASK_RESULT";
-export const VALIDATION_ERROR = "VALIDATION_ERROR";
-export const SERVER_ERROR = "SERVER_ERROR";
-export const INFO = "INFO";
 
 export const fetchTask = (id) => dispatch => {
     const connectSession = axios.create({
@@ -42,8 +40,10 @@ export const saveTask = (task) => dispatch => {
     connectSession.post(URL, task)
         .then(response => {
             console.log('save result=', response.data)
-            //dispatch(saveTaskResult(response.data));
-            dispatch({type: UPDATE_TASK, serverResponseData: response.data})
+            dispatch({type: UPDATE_TASK, serverPage: response.data});
+            dispatch({type: SAVE_TASK_RESULT, message: response.data});
+
+
            // fetchTask(response.data.pageName);
             //this.props.history.push("/home");
         })
@@ -53,7 +53,7 @@ export const saveTask = (task) => dispatch => {
                 if (error.response) {
                     if (error.response.status === 500) {
                         console.log(error.response.data);
-                        dispatch(saveTaskResult(error.response.data));
+                        dispatch({type: SERVER_ERROR, message: error.response.data});
                     } else {
                         console.log(error.response)
                     }
@@ -62,10 +62,11 @@ export const saveTask = (task) => dispatch => {
                 }
             } else {
                 if (error.response) {
+                    console.log("error.response",error.response)
                     if (error.response.data.type === VALIDATION_ERROR) {
-                        dispatch(saveTaskResult(error.response.data));
-                    } else {
-                        dispatch({type: SERVER_ERROR, errorMessage: error.response.data.title});
+                        dispatch({type: VALIDATION_ERROR, message: error.response.data});
+                    } else if (error.response.data.type === SERVER_ERROR) {
+                        dispatch({type: SERVER_ERROR, message: error.response.data});
                     }
                 } else {
                     dispatch({
@@ -80,12 +81,5 @@ export const saveTask = (task) => dispatch => {
             }
             //this.props.history.push("/home");
         })
-}
-
-export const saveTaskResult = serverPage => {
-    return {
-        type: serverPage.type,
-        serverResponseData: serverPage
-    }
 }
 

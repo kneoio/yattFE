@@ -22,7 +22,7 @@ export const tasksReducer  = (state = defaultState, action) => {
         case GET_TASKS: {
             return {
                 ...state,
-                serverPage: action.serverResponseData,
+                serverPage: action.serverPage,
             }
             break;
         }

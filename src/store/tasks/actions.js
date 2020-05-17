@@ -43,6 +43,6 @@ export const fetchTasks = (size, page) => dispatch => {
 export const fetchTasksSuccess = serverPage => {
     return {
         type: GET_TASKS,
-        serverResponseData: serverPage
+        serverPage: serverPage
     }
 }

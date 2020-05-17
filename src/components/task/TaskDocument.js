@@ -57,31 +57,33 @@ class TaskDocument extends React.Component {
 
 
     render() {
-       // console.log('doc prop', this.props)
+        //console.log('doc prop', this.props)
         let message = '';
-        if (this.props.responseType === 'VALIDATION_ERROR') {
-            message = <Alert
-                severity="warning"
-                style={{marginTop: 15}}>{this.props.title}
-            </Alert>
-        } else if (this.props.responseType === 'ERROR') {
-            message = <Alert
-                severity="error"
-                style={{marginTop: 15}}>{this.props.title}
-            </Alert>
-        } else if (this.props.responseType === 'INFO') {
-            message = (<Collapse in={this.state.alertOpen}>
-                <Alert
-                    severity="success"
-                    style={{marginTop: 15}}>
-                    {this.props.pageName}
+        if (this.props.message) {
+            if (this.props.message.type === 'VALIDATION_ERROR') {
+                message = <Alert
+                    severity="warning"
+                    style={{marginTop: 15, marginRight:300}}>{this.props.message.payloads.exception.message}
                 </Alert>
-            </Collapse>);
-        } else if (this.props.responseType === 'SERVER_ERROR') {
-            message = <Alert
-                severity="error"
-                style={{marginTop: 15}}>{this.props.title}
-            </Alert>
+            } else if (this.props.message.type === 'ERROR') {
+                message = <Alert
+                    severity="error"
+                    style={{marginTop: 15}}>{this.props.title}
+                </Alert>
+            } else if (this.props.message.type === 'INFO') {
+                message = (<Collapse in={this.state.alertOpen}>
+                    <Alert
+                        severity="success"
+                        style={{marginTop: 15}}>
+                        {this.props.pageName}
+                    </Alert>
+                </Collapse>);
+            } else if (this.props.message.type === 'SERVER_ERROR') {
+                message = <Alert
+                    severity="error"
+                    style={{marginTop: 15}}>{this.props.title}
+                </Alert>
+            }
         }
         const {handleSubmit, isNew, actions, statusCode} = this.props
         return (
@@ -113,26 +115,26 @@ TaskDocument.propTypes = {
 };
 
 const mapStateToProps = state => ({
+    message: state.messageReducer,
     allAssignees: state.assignees.serverPage,
-    responseType: state.taskReducer.serverPage.type,
-    statusCode: state.taskReducer.serverPage.payloads.task.statusCode,
-    pageName: state.taskReducer.serverPage.pageName,
-    title: state.taskReducer.serverPage.title,
-    isNew: state.taskReducer.serverPage.payloads.task.new,
-    actions: state.taskReducer.serverPage.payloads.actions,
+    id: state.taskReducer.payloads.task.id,
+    statusCode: state.taskReducer.payloads.task.statusCode,
+    pageName: state.taskReducer.pageName,
+    title: state.taskReducer.title,
+    isNew: state.taskReducer.payloads.task.new,
+    actions: state.taskReducer.payloads.actions,
     initialValues: {
-        typeCode: state.taskReducer.serverPage.payloads.task.typeCode,
-        priorityCode: state.taskReducer.serverPage.payloads.task.priorityCode,
-        deadline: state.taskReducer.serverPage.payloads.task.deadline,
-        assigneeId: state.taskReducer.serverPage.payloads.task.assigneeId,
-        description: state.taskReducer.serverPage.payloads.task.description
+        typeCode: state.taskReducer.payloads.task.typeCode,
+        priorityCode: state.taskReducer.payloads.task.priorityCode,
+        deadline: state.taskReducer.payloads.task.deadline,
+        assigneeId: state.taskReducer.payloads.task.assigneeId,
+        description: state.taskReducer.payloads.task.description
     },
     acl: {
-        authorName: state.taskReducer.serverPage.payloads.task.authorName,
-        regDate: state.taskReducer.serverPage.payloads.task.regDate,
-        rlsEntries: state.taskReducer.serverPage.payloads.task.acl
+        authorName: state.taskReducer.payloads.task.authorName,
+        regDate: state.taskReducer.payloads.task.regDate,
+        rlsEntries: state.taskReducer.payloads.task.acl
     }
-
 });
 
 TaskDocument = reduxForm({
