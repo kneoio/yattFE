@@ -9,7 +9,6 @@ import 'date-fns';
 import Alert from "@material-ui/lab/Alert";
 import {TaskForm} from "./TaskForm";
 import Grid from "@material-ui/core/Grid";
-import Collapse from "@material-ui/core/Collapse";
 
 class TaskDocument extends React.Component {
 
@@ -17,7 +16,13 @@ class TaskDocument extends React.Component {
         taskDocument: {},
         value: 1,
         index: 0,
-        alertOpen: true
+        showInfo: true,
+        validationError: {
+            description: {
+                isError: false,
+                message: ""
+            }
+        }
     }
 
     constructor(props) {
@@ -30,13 +35,29 @@ class TaskDocument extends React.Component {
         this.props.fetchAssignees();
     }
 
-    hideAlert() {
-        setTimeout(
-            this.setState({
-                alertOpen: false
-        }), 3000);
-
+    static getDerivedStateFromProps(props, state) {
+        console.log("props message", props.message);
+        if (props.message && props.message.type === 'VALIDATION_ERROR') {
+            return {
+                validationError: {
+                    description: {
+                        isError: true,
+                        message: props.message.payloads.exception.errorFields.description.helperText
+                    }
+                }
+            }
+        } else {
+            return {
+                validationError: {
+                    description: {
+                        isError: false,
+                        message: ""
+                    }
+                }
+            }
+        }
     }
+
 
     saveForm(formData) {
         let id = this.props.id;
@@ -63,21 +84,26 @@ class TaskDocument extends React.Component {
             if (this.props.message.type === 'VALIDATION_ERROR') {
                 message = <Alert
                     severity="warning"
-                    style={{marginTop: 15, marginRight:300}}>{this.props.message.payloads.exception.message}
+                    style={{
+                        marginTop: 15,
+                        marginRight: 300
+                    }}>{this.props.message.payloads.exception.errorFields.description.helperText}}
+
                 </Alert>
             } else if (this.props.message.type === 'ERROR') {
                 message = <Alert
                     severity="error"
-                    style={{marginTop: 15}}>{this.props.title}
+                    style={{marginTop: 15, marginRight: 300}}>{this.props.message.payloads.exception.message}
                 </Alert>
-            } else if (this.props.message.type === 'INFO') {
-                message = (<Collapse in={this.state.alertOpen}>
-                    <Alert
-                        severity="success"
-                        style={{marginTop: 15}}>
-                        {this.props.pageName}
-                    </Alert>
-                </Collapse>);
+            } else if (this.props.message.type === 'INFO' && this.state.showInfo) {
+                setTimeout(function () {
+                    this.setState({showInfo: false});
+                }.bind(this), 2000);
+                message = (<Alert
+                    severity="success"
+                    style={{marginTop: 15}}>
+                    Saved ...
+                </Alert>);
             } else if (this.props.message.type === 'SERVER_ERROR') {
                 message = <Alert
                     severity="error"
@@ -92,7 +118,6 @@ class TaskDocument extends React.Component {
                     <TaskForm
                         value="2"
                         handleSubmitFunction={handleSubmit(this.saveForm)}
-                        saveHandler={this.saveForm}
                         allAssignees={this.props.allAssignees}
                         hidden={this.value !== this.index}
                         acl={this.props.acl}
@@ -100,6 +125,7 @@ class TaskDocument extends React.Component {
                         isNew={isNew}
                         actions={actions}
                         statusCode={statusCode}
+                        validationErrors={this.state.validationError}
                     />
                 </Grid>
                 {message}
@@ -116,7 +142,7 @@ TaskDocument.propTypes = {
 
 const mapStateToProps = state => ({
     message: state.messageReducer,
-    allAssignees: state.assignees.serverPage,
+    allAssignees: state.assignees.serverPage.payloads.viewpage.result,
     id: state.taskReducer.payloads.task.id,
     statusCode: state.taskReducer.payloads.task.statusCode,
     pageName: state.taskReducer.pageName,

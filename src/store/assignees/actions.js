@@ -12,9 +12,9 @@ export const fetchAssignees = (size, page) => dispatch => {
         }
     });
     let URL = 'http://silverbox.example.com:8080/assignees';
-    console.log('request > ' + URL)
     connectSession.get(URL)
         .then(response => {
+            //console.log('assignee list response=',response.data)
             dispatch(fetchTasksSuccess(response.data))
         })
         .catch(error => {
@@ -34,7 +34,7 @@ export const fetchAssignees = (size, page) => dispatch => {
 export const fetchTasksSuccess = serverPage => {
     return {
         type: GET_ASSIGNEES,
-        serverResponseData: serverPage
+        serverPage: serverPage
     }
 }
 

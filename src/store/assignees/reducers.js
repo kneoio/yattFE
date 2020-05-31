@@ -22,7 +22,7 @@ export const assigneeReducer  = (state = defaultState, action) => {
         case GET_ASSIGNEES: {
             return {
                 ...state,
-                serverPage: action.serverResponseData,
+                serverPage: action.serverPage,
             }
             break;
         }

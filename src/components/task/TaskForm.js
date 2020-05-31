@@ -16,7 +16,6 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import {Link} from "react-router-dom";
 import TableContainer from "@material-ui/core/TableContainer";
 import {green} from '@material-ui/core/colors';
 import red from "@material-ui/core/colors/red";
@@ -24,6 +23,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Chip from "@material-ui/core/Chip";
 import Divider from "@material-ui/core/Divider";
 import {ActionBar} from "../ActionBar";
+import {AssigneeList} from "../AssigneeList";
 
 const types = [
     {title: "UNKNOWN", code: 0},
@@ -38,22 +38,8 @@ const priorities = [
     {title: "HIGH", code: 13},
     {title: "URGENT", code: 14}
 ];
-const statuses = [
-    {title: "UNKNOWN", code: 0},
-    {title: "DRAFT", code: 1},
-    {title: "IN_PROGRESS", code: 2},
-    {title: "DONE", code: 3},
-    {title: "SUSPEND", code: 4}
-]
-/*
 
-let description = {
-    error: false,
-    helperText: ""
-}
-*/
-
-const renderMultiTextField = ({input, label, meta: {touched, error}, ...custom}) => (
+const renderMultiTextField = ({input, label, helperText, error, meta: {touched}, ...custom}) => (
     <TextField
         label={label}
         style={{width: 860}}
@@ -62,6 +48,9 @@ const renderMultiTextField = ({input, label, meta: {touched, error}, ...custom})
         rows="6"
         {...input}
         {...custom}
+        error = {error}
+        helperText ={helperText}
+
     />
 )
 
@@ -91,20 +80,6 @@ const renderDateField = ({input, label, meta: {touched, error}, ...custom}) => (
         />
     </MuiPickersUtilsProvider>
 )
-/*
-const renderComboboxField = ({input, label, meta: {touched, error}, ...custom}) => (
-    <Select
-        native
-        style={{width: 500}}
-        label="Assignee"
-        {...input}
-        {...custom}
-    >
-        <option value={"00000000-0000-0000-0000-000000000000"} key={"0"}>No one</option>
-        {props.allAssignees.payloads.viewpage.result.map(row => (
-            <option value={row.id} key={row.id}>{row.title}</option>))}
-    </Select>
-)*/
 
 const Tab1 = (props) => {
     return (<div index={1}>
@@ -145,7 +120,8 @@ const Tab1 = (props) => {
                                 style={{marginRight: 10}}>Assignee</Typography>
                 </Grid>
                 <Grid item xs={9} align="left" >
-                    {/*                         <Field name="assigneeId" component={renderComboboxField}/>*/}
+                    <AssigneeList  allAssignees={props.allAssignees}/>
+
                 </Grid>
             </Grid>
             <Grid container style={{marginTop: 20}}>
@@ -153,9 +129,9 @@ const Tab1 = (props) => {
             </Grid>
             <Grid container>
                 <Field name="description"
-                       component={renderMultiTextField}
-                    //error={props.ver.error}
-                    // helperText={props.ver.helperText}
+                     component={renderMultiTextField}
+                     error={props.validationErrors.description.isError}
+                     helperText={props.validationErrors.description.message}
                 />
             </Grid>
         </div>
@@ -227,7 +203,7 @@ const Tab2 = (props) => {
 }
 
 export const TaskForm = (props) => {
-        //console.log("errorFields:", props.errFields)
+        //console.log("errorFields:", props.validationErrors)
         //console.log("Actions",props.actions)
         //console.log("Assignee",props.allAssignees)
         //console.log("all Props",props)
@@ -238,13 +214,14 @@ export const TaskForm = (props) => {
             description.error = false;
             description.helperText = "";
         }*/
-        const [tabValue, setTabValue] = React.useState(0);
 
+        //description.error = true;
+        //description.helperText = props.errFields.errorFields.description.helperText;
+
+        const [tabValue, setTabValue] = React.useState(0);
         const handleTabChange = (event, newValue) => {
             setTabValue(newValue);
         };
-
-
 
         return (
             <Grid style={{marginLeft: 10, marginRight: 20}}>
@@ -264,9 +241,7 @@ export const TaskForm = (props) => {
                                 {props.pageName}
                                 {props.isNew &&
                                 <Chip style={{marginLeft: 10, marginBottom: 10}} variant="outlined" size="small"
-                                      label="new"/>}
-                                <Chip style={{marginLeft: 10, marginBottom: 10}} variant="outlined" size="small"
-                                        label={props.statusCode}/>
+                                      color="secondary" label="new"/>}
                             </Typography>
                         </Grid>
                     </Grid>
@@ -280,7 +255,9 @@ export const TaskForm = (props) => {
                             <Tab label="ACL"/>
                         </Tabs>
                     </Paper>
-                    {tabValue === 0 && <Tab1/>}
+                    {tabValue === 0 && <Tab1
+                        allAssignees={props.allAssignees}
+                        validationErrors={props.validationErrors}/>}
                     {tabValue === 1 && <Tab2 acl={props.acl}/>}
                 </form>
             </Grid>

@@ -1,4 +1,4 @@
-import {GET_TASK, SAVE_TASK_RESULT, UPDATE_TASK} from "./actions";
+import {GET_TASK, UPDATE_TASK} from "./actions";
 
 const taskDefaultState = {
     identifier: null,

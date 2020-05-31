@@ -42,10 +42,6 @@ export const saveTask = (task) => dispatch => {
             console.log('save result=', response.data)
             dispatch({type: UPDATE_TASK, serverPage: response.data});
             dispatch({type: SAVE_TASK_RESULT, message: response.data});
-
-
-           // fetchTask(response.data.pageName);
-            //this.props.history.push("/home");
         })
         .catch(error => {
             console.log('save error ',error)
