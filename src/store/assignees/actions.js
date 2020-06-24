@@ -11,7 +11,7 @@ export const fetchAssignees = (size, page) => dispatch => {
             'Authorization': sessionStorage.getItem("jwtToken")
         }
     });
-    let URL = 'http://silverbox.example.com:8080/assignees';
+    let URL = process.env.REACT_APP_REST_HOST + '/assignees';
     connectSession.get(URL)
         .then(response => {
             //console.log('assignee list response=',response.data)

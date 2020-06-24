@@ -56,7 +56,6 @@ export const viewErrorHandler = (error, dispatch) => {
     }
 }
 
-
 export const errorHandler = (error, dispatch) => {
     console.log('save error ', error)
     if (!error.isAxiosError) {

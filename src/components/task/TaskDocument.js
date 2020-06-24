@@ -6,9 +6,6 @@ import {withRouter} from "react-router";
 import {fetchTask, saveTask} from "../../store/task/actions";
 import {fetchAssignees} from "../../store/assignees/actions";
 import 'date-fns';
-import Alert from "@material-ui/lab/Alert";
-import {TaskForm} from "./TaskForm";
-import Grid from "@material-ui/core/Grid";
 
 class TaskDocument extends React.Component {
 
@@ -82,39 +79,39 @@ class TaskDocument extends React.Component {
         let message = '';
         if (this.props.message) {
             if (this.props.message.type === 'VALIDATION_ERROR') {
-                message = <Alert
+/*                message = <Alert
                     severity="warning"
                     style={{
                         marginTop: 15,
                         marginRight: 300
                     }}>{this.props.message.payloads.exception.errorFields.description.helperText}}
 
-                </Alert>
+                </Alert>*/
             } else if (this.props.message.type === 'ERROR') {
-                message = <Alert
+                /*message = <Alert
                     severity="error"
                     style={{marginTop: 15, marginRight: 300}}>{this.props.message.payloads.exception.message}
-                </Alert>
+                </Alert>*/
             } else if (this.props.message.type === 'INFO' && this.state.showInfo) {
                 setTimeout(function () {
                     this.setState({showInfo: false});
                 }.bind(this), 2000);
-                message = (<Alert
+              /*  message = (<Alert
                     severity="success"
                     style={{marginTop: 15}}>
                     Saved ...
-                </Alert>);
+                </Alert>);*/
             } else if (this.props.message.type === 'SERVER_ERROR') {
-                message = <Alert
+                /*message = <Alert
                     severity="error"
                     style={{marginTop: 15}}>{this.props.title}
-                </Alert>
+                </Alert>*/
             }
         }
         const {handleSubmit, isNew, actions, statusCode} = this.props
         return (
             <div>
-                <Grid>
+              {/*  <Grid>
                     <TaskForm
                         value="2"
                         handleSubmitFunction={handleSubmit(this.saveForm)}
@@ -127,7 +124,7 @@ class TaskDocument extends React.Component {
                         statusCode={statusCode}
                         validationErrors={this.state.validationError}
                     />
-                </Grid>
+                </Grid>*/}
                 {message}
             </div>
         )

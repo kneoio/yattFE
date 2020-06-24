@@ -1,25 +1,17 @@
 import React from 'react';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableRow from '@material-ui/core/TableRow';
 import {deleteTasks, fetchTasks} from "../../store/tasks/actions";
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
-import Checkbox from "@material-ui/core/Checkbox";
-import TableHead from "@material-ui/core/TableHead";
-import TablePagination from "@material-ui/core/TablePagination";
 import {Link} from "react-router-dom";
-import Alert from "@material-ui/lab/Alert";
-import Grid from "@material-ui/core/Grid";
-import Toolbar from "@material-ui/core/Toolbar";
-import Button from "@material-ui/core/Button";
-import Chip from "@material-ui/core/Chip";
-import {green} from "@material-ui/core/colors";
-import yellow from "@material-ui/core/colors/yellow";
-import red from "@material-ui/core/colors/red";
-import blue from "@material-ui/core/colors/blue";
+import Alert from "react-bootstrap/Alert";
+import {Badge, FormCheck, Row} from "react-bootstrap";
+import Container from "react-bootstrap/Container";
+import Col from "react-bootstrap/Col";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
+import Button from "react-bootstrap/Button";
+import Pagination from "react-bootstrap/Pagination";
+import Table from "react-bootstrap/Table";
+import {blue, green, red, yellow} from "color-name";
 
 
 class TaskView extends React.Component {
@@ -28,7 +20,8 @@ class TaskView extends React.Component {
         super(props);
         this.state = {
             pageSize: 20,
-            checkedRows: []
+            checkedRows: [],
+            showInfo: true
         }
     }
 
@@ -61,7 +54,7 @@ class TaskView extends React.Component {
             }));
         } else {
             this.setState({
-                checkedRows: this.state.checkedRows.filter(function (prevId){
+                checkedRows: this.state.checkedRows.filter(function (prevId) {
                     return prevId !== id
                 })
             });
@@ -69,13 +62,23 @@ class TaskView extends React.Component {
     }
 
     render() {
-        console.log('view prop', this.props)
+        //console.log('view prop', this.props)
+        let message = '';
         if (this.props.message) {
             if (this.props.message.type === 'ERROR' || this.props.message.type === 'HARD_ERROR') {
-                return <Alert
+                message = <Alert
                     severity="error"
                     style={{marginTop: 15, marginRight: 300}}>{this.props.message.title}
                 </Alert>
+            } else if (this.props.message.type === 'INFO' && this.state.showInfo) {
+                setTimeout(function () {
+                    this.setState({showInfo: false});
+                }.bind(this), 2000);
+                if (this.props.message.title === 'SUCCESS') {
+                    message = (<Alert severity="success" style={{marginTop: 15}}> {this.props.message.title} </Alert>);
+                } else {
+                    message = (<Alert severity="warning" style={{marginTop: 15}}>{this.props.message.title}</Alert>);
+                }
             }
         }
         if (this.props.viewpage.type === '') {
@@ -89,65 +92,92 @@ class TaskView extends React.Component {
             return (<Alert>Loading ...</Alert>);
         }
         return (
-            <TableContainer>
-                <Grid container justify="center">
-                    <Grid item xs={6}>
-                        <Toolbar>
+            <div>
+                <Row>
+                    <Col>
+                        {message}
+                    </Col>
+                </Row>
+                <Row>
+                    <Col className="my-2">
+                        <ButtonGroup>
                             <Button
-                                variant="contained"
                                 component={Link}
                                 to={"/document/new"}>
                                 Create
                             </Button>
                             <Button
-                                variant="contained"
-                                style={{marginLeft: 10}}
                                 onClick={this.deleteRecord}>
                                 Delete
                             </Button>
-                        </Toolbar>
-                    </Grid>
-                    <Grid item xs={6} style={{marginTop: 15}} align="right">
+                        </ButtonGroup>
+                    </Col>
+                    <Col className="my-2">
                         <TaskTablePagination
                             view={view}
                             handleChangePage={this.handleChangePage}
                             handleChangeRowsPerPage={this.handleChangeRowsPerPage}/>
-                    </Grid>
-                </Grid>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>#</TableCell>
-                            <TableCell>Description</TableCell>
-                            <TableCell>Type</TableCell>
-                            <TableCell>Status</TableCell>
-                            <TableCell>Deadline</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows.map(row => {
-                            return <TaskTableRow tableRow={row} key={row.id} checker={this.checkRecord}/>
-                        })}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                    </Col>
+                </Row>
+
+                <Row>
+                    <Col>
+                        <Table striped bordered hove>
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Description</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Deadline</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {rows.map(row => {
+                                return <TaskTableRow tableRow={row} key={row.id} checker={this.checkRecord}/>
+                            })}
+                            </tbody>
+                        </Table>
+                    </Col>
+                </Row>
+            </div>
         )
     }
 }
 
-class TaskTablePagination extends React.Component {
+class TaskTablePagination
+    extends React
+        .Component {
 
     render() {
         const {count, pageSize, pageNum} = this.props.view;
         return (
-            <TablePagination
+            <Pagination>
+                <Pagination.First/>
+                <Pagination.Prev/>
+                <Pagination.Item>{1}</Pagination.Item>
+                <Pagination.Ellipsis/>
+
+                <Pagination.Item>{10}</Pagination.Item>
+                <Pagination.Item>{11}</Pagination.Item>
+                <Pagination.Item active>{12}</Pagination.Item>
+                <Pagination.Item>{13}</Pagination.Item>
+                <Pagination.Item disabled>{14}</Pagination.Item>
+
+                <Pagination.Ellipsis/>
+                <Pagination.Item>{20}</Pagination.Item>
+                <Pagination.Next/>
+                <Pagination.Last/>
+            </Pagination>
+
+            /*<TablePagination
                 rowsPerPageOptions={[10, 20, 50, 100, {value: -1, label: 'All'}]}
                 count={count}
                 rowsPerPage={pageSize}
                 page={pageNum}
                 onChangePage={this.props.handleChangePage}
                 onChangeRowsPerPage={this.props.handleChangeRowsPerPage}
-            />)
+            />*/)
     }
 }
 
@@ -163,37 +193,35 @@ class TaskTableRow extends React.Component {
         this.priorities[14] = {title: "URGENT", code: 14};
 
         this.statuses = [];
-        this.statuses[0] = <Chip size="small" label="unknown"/>;
-        this.statuses[1] = <Chip size="small" variant="outlined" style={{backgroundColor: blue[500]}} label="draft"/>;
-        this.statuses[2] =
-            <Chip size="small" variant="outlined" style={{backgroundColor: yellow[200]}} label="in progress"/>;
-        this.statuses[3] = <Chip size="small" variant="outlined" style={{backgroundColor: green[200]}} label="done"/>;
-        this.statuses[4] = <Chip size="small" variant="outlined" style={{backgroundColor: red[200]}} label="suspend"/>;
+        this.statuses[0] = <Badge label="unknown"/>;
+        this.statuses[1] = <Badge style={{backgroundColor: "#a1a199", width:80}}>draft</Badge>;
+        this.statuses[2] = <Badge style={{backgroundColor: "#96bf8c", width:80}}>in progress</Badge>;
+        this.statuses[3] = <Badge style={{backgroundColor: "#9eb7de", width:80}}>done</Badge>;
+        this.statuses[4] = <Badge style={{backgroundColor: "#e8e15c", width:80}}>suspend</Badge>;
     }
 
 
     handleCheck = (event, isInputChecked) => {
-        //console.log(event.target.value, isInputChecked)
         this.props.checker(event.target.value, isInputChecked);
     };
 
     render() {
         return (
-            <TableRow>
-                <TableCell>
-                    <Checkbox
-                        value={this.props.tableRow.id}
-                        onChange={this.handleCheck}
-                    />
-                </TableCell>
-                <TableCell component={Link}
-                           to={"/document/" + this.props.tableRow.id + "/"}>{this.props.tableRow.title}</TableCell>
-                <TableCell>{this.priorities[this.props.tableRow.priorityCode].title}</TableCell>
-                <TableCell>{this.statuses[this.props.tableRow.statusCode]}</TableCell>
-                <TableCell>{this.props.tableRow.deadline}</TableCell>
-            </TableRow>)
+            <tr>
+                <td>
+                    <FormCheck value={this.props.tableRow.id} onChange={this.handleCheck}/>
+                    {/*<div className="form-check"
+                         onChange={this.handleCheck}>
+                    </div>*/}
+                </td>
+                <td component={Link} to={"/document/" + this.props.tableRow.id + "/"}>{this.props.tableRow.title}</td>
+                <td>{this.priorities[this.props.tableRow.priorityCode].title}</td>
+                <td>{this.statuses[this.props.tableRow.statusCode]}</td>
+                <td>{this.props.tableRow.deadline}</td>
+            </tr>)
     }
 }
+
 
 TaskView.propTypes = {
     fetchTasks: PropTypes.func.isRequired,

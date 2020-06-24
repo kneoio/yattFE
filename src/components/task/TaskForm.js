@@ -1,27 +1,6 @@
 import * as React from 'react';
-import Grid from "@material-ui/core/Grid";
 import {Field} from "redux-form";
-import MenuItem from "@material-ui/core/MenuItem";
-import Select from "@material-ui/core/Select";
-import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
-import TableBody from "@material-ui/core/TableBody";
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import TableContainer from "@material-ui/core/TableContainer";
-import {green} from '@material-ui/core/colors';
-import red from "@material-ui/core/colors/red";
-import Toolbar from "@material-ui/core/Toolbar";
-import Chip from "@material-ui/core/Chip";
-import Divider from "@material-ui/core/Divider";
+
 import {ActionBar} from "../ActionBar";
 import {AssigneeList} from "../AssigneeList";
 
@@ -38,6 +17,7 @@ const priorities = [
     {title: "HIGH", code: 13},
     {title: "URGENT", code: 14}
 ];
+/*
 
 const renderMultiTextField = ({input, label, helperText, error, meta: {touched}, ...custom}) => (
     <TextField
@@ -207,13 +187,13 @@ export const TaskForm = (props) => {
         //console.log("Actions",props.actions)
         //console.log("Assignee",props.allAssignees)
         //console.log("all Props",props)
-        /*if (props.errFields && props.errFields.errorFields && props.errFields.errorFields.description) {
+        /!*if (props.errFields && props.errFields.errorFields && props.errFields.errorFields.description) {
             description.error = true;
             description.helperText = props.errFields.errorFields.description.helperText;
         } else {
             description.error = false;
             description.helperText = "";
-        }*/
+        }*!/
 
         //description.error = true;
         //description.helperText = props.errFields.errorFields.description.helperText;
@@ -263,3 +243,4 @@ export const TaskForm = (props) => {
             </Grid>
         );
     }
+*/

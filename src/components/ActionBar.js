@@ -1,5 +1,3 @@
-import Button from "@material-ui/core/Button";
-import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import * as React from "react";
 
 export const ActionBar = (props) => {
@@ -14,11 +12,11 @@ export const ActionBar = (props) => {
 
     props.actions.map(row => {
         if (row.type === "CLOSE_FORM") {
-            close_button = <Button onClick={cancelForm} variant="contained" style={{marginLeft: 10}}>Close</Button>;
+/*            close_button = <Button onClick={cancelForm} variant="contained" style={{marginLeft: 10}}>Close</Button>;*/
         } else if (row.type === "SAVE") {
-            save_button = <Button type="submit" variant="contained" style={{marginLeft: 10}}>Save</Button>;
+/*            save_button = <Button type="submit" variant="contained" style={{marginLeft: 10}}>Save</Button>;*/
         } else if (row.type === "CUSTOM") {
-            custom_button = <Button type="submit" variant="contained" style={{marginLeft: 10}}>Start implementation&nbsp;<PlayCircleOutlineIcon/></Button>;
+/*            custom_button = <Button type="submit" variant="contained" style={{marginLeft: 10}}>Start implementation&nbsp;<PlayCircleOutlineIcon/></Button>;*/
         }});
 
     return (

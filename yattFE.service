@@ -1,0 +1,14 @@
+[Unit]
+Description=yatt FE
+
+[Service]
+WorkingDirectory=/home/juka/yattFE
+ExecStart=/usr/bin/serve -s build --listen 8205
+User=root
+Type=simple
+Restart=no
+RestartSec=10
+
+
+[Install]
+WantedBy=multi-user.target

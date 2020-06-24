@@ -1,10 +1,9 @@
 import React from 'react';
 import 'date-fns';
 import {Field} from "redux-form";
-import Select from "@material-ui/core/Select";
 
 export const AssigneeList = (props) => {
-    const renderComboboxField = ({input, label, meta: {touched, error}, ...custom}) => (
+/*    const renderComboboxField = ({input, label, meta: {touched, error}, ...custom}) => (
         <Select
             native
             style={{width: 500}}
@@ -16,9 +15,9 @@ export const AssigneeList = (props) => {
             {props.allAssignees.map(row => (
                 <option value={row.id} key={row.id}>{row.title}</option>))}
         </Select>
-    )
+    )*/
 
-    return (<Field name="assigneeId" component={renderComboboxField} assigneeList={props.allAssignees}/>);
+    //return (<Field name="assigneeId" component={renderComboboxField} assigneeList={props.allAssignees}/>);
 
 }
 

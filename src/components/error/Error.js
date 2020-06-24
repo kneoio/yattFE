@@ -1,24 +1,10 @@
 import React from 'react';
-import Typography from '@material-ui/core/Typography';
-import {makeStyles} from '@material-ui/core/styles';
 
-import Grid from "@material-ui/core/Grid";
-import {textAlign} from "@material-ui/system";
-import IconButton from "@material-ui/core/IconButton";
-import Toolbar from "@material-ui/core/Toolbar";
-import AppBar from "@material-ui/core/AppBar";
-import MenuIcon from '@material-ui/icons/Menu';
 
-const useStyles = makeStyles({
-    root: {
-        width: '100%',
-        maxWidth: 500,
-    },
-});
 
 export default function Error(props) {
-    const classes = useStyles();
-    return (
+
+    /*return (
         <div>
             <Grid container spacing={3}>
                 <Grid item xs={12}>
@@ -48,7 +34,7 @@ export default function Error(props) {
                 </Grid>
             </Grid>
         </div>
-    )
+    )*/
 }
 
 
