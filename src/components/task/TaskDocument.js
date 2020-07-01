@@ -5,7 +5,11 @@ import {reduxForm} from 'redux-form'
 import {withRouter} from "react-router";
 import {fetchTask, saveTask} from "../../store/task/actions";
 import {fetchAssignees} from "../../store/assignees/actions";
-import 'date-fns';
+import {TaskForm} from "./TaskForm";
+import Alert from "react-bootstrap/Alert";
+import {Container} from "react-bootstrap";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 class TaskDocument extends React.Component {
 
@@ -13,7 +17,7 @@ class TaskDocument extends React.Component {
         taskDocument: {},
         value: 1,
         index: 0,
-        showInfo: true,
+        show: true,
         validationError: {
             description: {
                 isError: false,
@@ -24,7 +28,6 @@ class TaskDocument extends React.Component {
 
     constructor(props) {
         super(props);
-        this.saveForm = this.saveForm.bind(this);
     }
 
     componentDidMount() {
@@ -32,100 +35,58 @@ class TaskDocument extends React.Component {
         this.props.fetchAssignees();
     }
 
-    static getDerivedStateFromProps(props, state) {
-        console.log("props message", props.message);
-        if (props.message && props.message.type === 'VALIDATION_ERROR') {
-            return {
-                validationError: {
-                    description: {
-                        isError: true,
-                        message: props.message.payloads.exception.errorFields.description.helperText
-                    }
-                }
-            }
-        } else {
-            return {
-                validationError: {
-                    description: {
-                        isError: false,
-                        message: ""
-                    }
-                }
-            }
-        }
+    setShow(isShowed) {
+        this.setState({
+            show: isShowed
+        })
     }
-
-
-    saveForm(formData) {
-        let id = this.props.id;
-        if (id === "new") {
-            id = null;
-        }
-        this.props.saveTask({
-            id: id,
-            description: formData.description,
-            assigneeId: formData.assigneeId,
-            deadline: formData.deadline,
-            priorityCode: formData.priorityCode,
-            statusCode: formData.statusCode,
-            typeCode: formData.typeCode
-        });
-        //this.cancelForm();
-    }
-
 
     render() {
-        //console.log('doc prop', this.props)
+        // console.log('TaskDocument', this.props)
         let message = '';
         if (this.props.message) {
-            if (this.props.message.type === 'VALIDATION_ERROR') {
-/*                message = <Alert
-                    severity="warning"
-                    style={{
-                        marginTop: 15,
-                        marginRight: 300
-                    }}>{this.props.message.payloads.exception.errorFields.description.helperText}}
-
-                </Alert>*/
+            if (this.props.message.type === 'VALIDATION_ERROR' && this.state.show) {
+                message =
+                    <Alert variant="danger" onClose={() => this.setShow(false)} dismissible>
+                        <Alert.Heading>Validation error</Alert.Heading>
+                        {this.props.message.payloads.exception.errorFields.description.helperText}
+                    </Alert>
             } else if (this.props.message.type === 'ERROR') {
-                /*message = <Alert
-                    severity="error"
-                    style={{marginTop: 15, marginRight: 300}}>{this.props.message.payloads.exception.message}
-                </Alert>*/
+                message = <Alert
+                    variant="danger"><Alert.Heading>Error!</Alert.Heading>{this.props.message.payloads.exception.message}
+                </Alert>
             } else if (this.props.message.type === 'INFO' && this.state.showInfo) {
                 setTimeout(function () {
                     this.setState({showInfo: false});
                 }.bind(this), 2000);
-              /*  message = (<Alert
-                    severity="success"
-                    style={{marginTop: 15}}>
-                    Saved ...
-                </Alert>);*/
+                message = <Alert variant="success">Saved..</Alert>
             } else if (this.props.message.type === 'SERVER_ERROR') {
-                /*message = <Alert
-                    severity="error"
-                    style={{marginTop: 15}}>{this.props.title}
-                </Alert>*/
+                message = <Alert variant="danger"><Alert.Heading>Server error</Alert.Heading>{this.props.title}</Alert>
             }
         }
-        const {handleSubmit, isNew, actions, statusCode} = this.props
+        const {isNew, actions, statusCode} = this.props
         return (
             <div>
-              {/*  <Grid>
-                    <TaskForm
-                        value="2"
-                        handleSubmitFunction={handleSubmit(this.saveForm)}
-                        allAssignees={this.props.allAssignees}
-                        hidden={this.value !== this.index}
-                        acl={this.props.acl}
-                        pageName={this.props.pageName}
-                        isNew={isNew}
-                        actions={actions}
-                        statusCode={statusCode}
-                        validationErrors={this.state.validationError}
-                    />
-                </Grid>*/}
-                {message}
+                <TaskForm
+                    value="2"
+                    allAssignees={this.props.allAssignees}
+                    hidden={this.value !== this.index}
+                    acl={this.props.acl}
+                    pageName={this.props.pageName}
+                    isNew={isNew}
+                    saveTaskAction={this.props.saveTask}
+                    actions={actions}
+                    statusCode={statusCode}
+                    validationErrors={this.state.validationError}
+                    initialValues={this.props.initialValues}
+                />
+                <Container fluid>
+                    <Row className="mt-4">
+                        <Col>
+                            {message}
+                        </Col>
+                    </Row>
+                </Container>
             </div>
         )
     }

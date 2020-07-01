@@ -10,9 +10,47 @@ import Col from "react-bootstrap/Col";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
 import Pagination from "react-bootstrap/Pagination";
-import Table from "react-bootstrap/Table";
-import {blue, green, red, yellow} from "color-name";
+import BootstrapTable from 'react-bootstrap-table-next';
+import cellEditFactory from 'react-bootstrap-table2-editor';
+import paginationFactory from 'react-bootstrap-table2-paginator';
 
+
+
+function linkFormatter(cell, row, rowIndex, formatExtraData) {
+    return (
+        <Link style={{color: '#000000'}} to={"/document/" + row.id}>{row.title}</Link>
+    );
+}
+
+const columns = [
+    {
+        dataField: 'description',
+        text: 'Description',
+        formatter: linkFormatter,
+        editable: false
+    }, {
+        dataField: 'priorityCode',
+        text: 'Priority',
+        editable: false
+    }, {
+        dataField: 'statusCode',
+        text: 'Status',
+        editable: false
+    }
+    , {
+        dataField: 'deadline',
+        text: 'Deadline',
+        editable: false
+    }];
+
+const selectRow = {
+    mode: 'checkbox',
+    clickToSelect: false
+};
+
+const cellEdit = {
+    mode: 'click'
+};
 
 class TaskView extends React.Component {
 
@@ -92,7 +130,7 @@ class TaskView extends React.Component {
             return (<Alert>Loading ...</Alert>);
         }
         return (
-            <div>
+            <Container fluid>
                 <Row>
                     <Col>
                         {message}
@@ -102,84 +140,39 @@ class TaskView extends React.Component {
                     <Col className="my-2">
                         <ButtonGroup>
                             <Button
-                                component={Link}
+                                variant="outline-success"
+                                as={Link}
                                 to={"/document/new"}>
                                 Create
                             </Button>
                             <Button
+                                disabled
+                                variant="outline-danger"
                                 onClick={this.deleteRecord}>
                                 Delete
                             </Button>
                         </ButtonGroup>
                     </Col>
-                    <Col className="my-2">
-                        <TaskTablePagination
-                            view={view}
-                            handleChangePage={this.handleChangePage}
-                            handleChangeRowsPerPage={this.handleChangeRowsPerPage}/>
-                    </Col>
                 </Row>
 
                 <Row>
                     <Col>
-                        <Table striped bordered hove>
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Description</th>
-                                <th>Type</th>
-                                <th>Status</th>
-                                <th>Deadline</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {rows.map(row => {
-                                return <TaskTableRow tableRow={row} key={row.id} checker={this.checkRecord}/>
-                            })}
-                            </tbody>
-                        </Table>
+                        <BootstrapTable
+                            keyField='id'
+                            data={rows}
+                            columns={columns}
+                            selectRow={selectRow}
+                            cellEdit={cellEditFactory({mode: 'click'})}
+                            pagination={paginationFactory()}
+                        />
                     </Col>
                 </Row>
-            </div>
+            </Container>
         )
     }
 }
 
-class TaskTablePagination
-    extends React
-        .Component {
 
-    render() {
-        const {count, pageSize, pageNum} = this.props.view;
-        return (
-            <Pagination>
-                <Pagination.First/>
-                <Pagination.Prev/>
-                <Pagination.Item>{1}</Pagination.Item>
-                <Pagination.Ellipsis/>
-
-                <Pagination.Item>{10}</Pagination.Item>
-                <Pagination.Item>{11}</Pagination.Item>
-                <Pagination.Item active>{12}</Pagination.Item>
-                <Pagination.Item>{13}</Pagination.Item>
-                <Pagination.Item disabled>{14}</Pagination.Item>
-
-                <Pagination.Ellipsis/>
-                <Pagination.Item>{20}</Pagination.Item>
-                <Pagination.Next/>
-                <Pagination.Last/>
-            </Pagination>
-
-            /*<TablePagination
-                rowsPerPageOptions={[10, 20, 50, 100, {value: -1, label: 'All'}]}
-                count={count}
-                rowsPerPage={pageSize}
-                page={pageNum}
-                onChangePage={this.props.handleChangePage}
-                onChangeRowsPerPage={this.props.handleChangeRowsPerPage}
-            />*/)
-    }
-}
 
 class TaskTableRow extends React.Component {
 
@@ -194,10 +187,10 @@ class TaskTableRow extends React.Component {
 
         this.statuses = [];
         this.statuses[0] = <Badge label="unknown"/>;
-        this.statuses[1] = <Badge style={{backgroundColor: "#a1a199", width:80}}>draft</Badge>;
-        this.statuses[2] = <Badge style={{backgroundColor: "#96bf8c", width:80}}>in progress</Badge>;
-        this.statuses[3] = <Badge style={{backgroundColor: "#9eb7de", width:80}}>done</Badge>;
-        this.statuses[4] = <Badge style={{backgroundColor: "#e8e15c", width:80}}>suspend</Badge>;
+        this.statuses[1] = <Badge style={{backgroundColor: "#a1a199", width: 80}}>draft</Badge>;
+        this.statuses[2] = <Badge style={{backgroundColor: "#96bf8c", width: 80}}>in progress</Badge>;
+        this.statuses[3] = <Badge style={{backgroundColor: "#9eb7de", width: 80}}>done</Badge>;
+        this.statuses[4] = <Badge style={{backgroundColor: "#e8e15c", width: 80}}>suspend</Badge>;
     }
 
 
@@ -214,7 +207,8 @@ class TaskTableRow extends React.Component {
                          onChange={this.handleCheck}>
                     </div>*/}
                 </td>
-                <td component={Link} to={"/document/" + this.props.tableRow.id + "/"}>{this.props.tableRow.title}</td>
+                <td><Link style={{color: '#000000'}}
+                          to={"/document/" + this.props.tableRow.id}>{this.props.tableRow.title}</Link></td>
                 <td>{this.priorities[this.props.tableRow.priorityCode].title}</td>
                 <td>{this.statuses[this.props.tableRow.statusCode]}</td>
                 <td>{this.props.tableRow.deadline}</td>

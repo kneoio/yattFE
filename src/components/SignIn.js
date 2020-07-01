@@ -11,7 +11,6 @@ import {useFormik} from "formik";
 import Alert from "react-bootstrap/Alert";
 
 const SignIn = props => {
-    console.log(props.security.type);
     const formik = useFormik({
         initialValues: {
             user: "",

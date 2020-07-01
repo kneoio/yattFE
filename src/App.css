@@ -12,3 +12,6 @@
 .juka-navbar .nav-item:hover .nav-link {
   color: #ffffff;
 }
+.error {
+  color: #f10a0a;
+}

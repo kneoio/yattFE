@@ -1,6 +1,5 @@
 import React from 'react';
 import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import {Provider} from 'react-redux';
 import store from './store/store.js';
 import {
@@ -12,7 +11,6 @@ import Outline from './components/Outline'
 import AboutPage from "./components/about/AboutPage";
 import Error from "./components/error/Error";
 import SignIn from "./components/SignIn";
-
 
 
 function App() {
@@ -29,8 +27,7 @@ function App() {
                         <Route path="/document/:id" exact component={Outline}/>
                         <Route path="/about" exact component={AboutPage}/>
                         <Route path="/sign_in" exact component={SignIn}/>
-                        <Route path="/error/:message" exact component={Error}/>
-                        <Route path="/" component={ Error}/>
+                        <Route path="/error/:message" exact component={Error}/>                        <Route path="/" component={ Error}/>
                     </Switch>
                 </div>
             </Router>

@@ -11,7 +11,7 @@ export const fetchAssignees = (size, page) => dispatch => {
             'Authorization': sessionStorage.getItem("jwtToken")
         }
     });
-    let URL = process.env.REACT_APP_REST_HOST + '/assignees';
+    let URL = process.env.REACT_APP_REST_HOST + '/assignees?pattern=OPTION';
     connectSession.get(URL)
         .then(response => {
             //console.log('assignee list response=',response.data)

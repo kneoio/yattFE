@@ -5,10 +5,8 @@ import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 
 import "./../App.css"
-import {Container} from "react-bootstrap";
 import TaskView from "./task/TaskView";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import TaskDocument from "./task/TaskDocument";
 
 const drawerWidth = 240;
 
@@ -84,9 +82,8 @@ export const Outline = (props) => {
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>
-            <Container fluid>
-                <TaskView/>
-            </Container>
+            {props.match.path === "/view/:viewName" && props.match.params.viewName === "tasks" && <TaskView/>}
+            {props.match.path === "/document/:id" && <TaskDocument id={props.match.params.id}/>}
         </div>
     );
 }

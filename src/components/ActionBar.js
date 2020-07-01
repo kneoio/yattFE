@@ -1,26 +1,26 @@
 import * as React from "react";
+import Button from "react-bootstrap/Button";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
 
 export const ActionBar = (props) => {
-   // console.log("action bar", props);
     let close_button;
     let save_button;
     let custom_button;
 
-    const cancelForm = () => {
-        window.location.replace('/view/tasks');
+    const saveForm = () => {
+        props.formRef.current.handleSubmit();
     }
 
     props.actions.map(row => {
         if (row.type === "CLOSE_FORM") {
-/*            close_button = <Button onClick={cancelForm} variant="contained" style={{marginLeft: 10}}>Close</Button>;*/
+            close_button = <Button variant="outline-dark" href="/view/tasks">Close</Button>;
         } else if (row.type === "SAVE") {
-/*            save_button = <Button type="submit" variant="contained" style={{marginLeft: 10}}>Save</Button>;*/
-        } else if (row.type === "CUSTOM") {
-/*            custom_button = <Button type="submit" variant="contained" style={{marginLeft: 10}}>Start implementation&nbsp;<PlayCircleOutlineIcon/></Button>;*/
+            save_button = <Button onClick={saveForm} variant="outline-success">Save</Button>;
+        } else if (row.type === "CUSTOM" ) {
+            custom_button = <Button variant="outline-success">Start implementation</Button>;
         }});
-
     return (
-         <div>{close_button}{save_button}{custom_button}</div>
+        <ButtonGroup>{close_button}{save_button}{custom_button}</ButtonGroup>
     )
 }
 
