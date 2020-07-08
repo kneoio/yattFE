@@ -15,7 +15,7 @@ export const ActionBar = (props) => {
         if (row.type === "CLOSE_FORM") {
             close_button = <Button variant="outline-dark" href="/view/tasks">Close</Button>;
         } else if (row.type === "SAVE") {
-            save_button = <Button onClick={saveForm} variant="outline-success">Save</Button>;
+            save_button = <Button onClick={saveForm} variant="outline-success">Save & Close</Button>;
         } else if (row.type === "CUSTOM" ) {
             custom_button = <Button variant="outline-success">Start implementation</Button>;
         }});

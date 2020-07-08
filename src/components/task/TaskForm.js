@@ -29,7 +29,9 @@ export const TaskForm = (props) => {
                 <Col className="mt-3 mb-2 text-right">
                     {statuses[props.statusCode]}
                 </Col>
-                <Col className="mt-3 mb-2 text-right">
+            </Row>
+            <Row>
+                <Col style={{backgroundColor: "#eee8e8", width: 100}}>
                     {props.pageName}
                 </Col>
             </Row>

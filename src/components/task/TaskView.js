@@ -4,23 +4,52 @@ import PropTypes from "prop-types";
 import {connect} from "react-redux";
 import {Link} from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
-import {Badge, FormCheck, Row} from "react-bootstrap";
+import {Badge, Row} from "react-bootstrap";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
-import Pagination from "react-bootstrap/Pagination";
 import BootstrapTable from 'react-bootstrap-table-next';
 import cellEditFactory from 'react-bootstrap-table2-editor';
-import paginationFactory from 'react-bootstrap-table2-paginator';
+import paginationFactory, {PaginationListStandalone, PaginationProvider} from 'react-bootstrap-table2-paginator';
+import overlayFactory from 'react-bootstrap-table2-overlay';
+import InfoMessagebox from "../InfoMessagebox";
+import ErrorMessagebox from "../ErrorMessagebox";
+
+const statuses = [];
+statuses[0] = <Badge>UNKNOWN</Badge>;
+statuses[1] = <Badge style={{backgroundColor: "#a1a199", width: 95}}>DRAFT</Badge>;
+statuses[2] = <Badge style={{backgroundColor: "#96bf8c", width: 95}}>IN PROGRESS</Badge>;
+statuses[3] = <Badge style={{backgroundColor: "#9eb7de", width: 95}}>DONE</Badge>;
+statuses[4] = <Badge style={{backgroundColor: "#e8e15c", width: 95}}>SUSPEND</Badge>;
 
 
+const priorities = [];
+priorities[0] = "UNKNOWN";
+priorities[11] = "LOW";
+priorities[12] = "MIDDLE";
+priorities[13] = "HIGH";
+priorities[14] = "URGENT";
 
-function linkFormatter(cell, row, rowIndex, formatExtraData) {
+
+function linkFormatter(cell, row) {
     return (
         <Link style={{color: '#000000'}} to={"/document/" + row.id}>{row.title}</Link>
     );
 }
+
+function statusCellFormatter(cell, row) {
+    return (
+        statuses[row.statusCode]
+    );
+}
+
+function priorityCellFormatter(cell, row) {
+    return (
+        priorities[row.priorityCode]
+    );
+}
+
 
 const columns = [
     {
@@ -31,92 +60,109 @@ const columns = [
     }, {
         dataField: 'priorityCode',
         text: 'Priority',
-        editable: false
+        editable: false,
+        formatter: priorityCellFormatter
     }, {
         dataField: 'statusCode',
         text: 'Status',
-        editable: false
+        editable: false,
+        formatter: statusCellFormatter,
+        style: {
+            width: 100
+        }
     }
     , {
         dataField: 'deadline',
         text: 'Deadline',
-        editable: false
+        editable: false,
+        type: 'date'
     }];
 
-const selectRow = {
-    mode: 'checkbox',
-    clickToSelect: false
-};
-
-const cellEdit = {
-    mode: 'click'
-};
 
 class TaskView extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            pageSize: 20,
-            checkedRows: [],
-            showInfo: true
+            sizePerPage: 20,
+            page: 1,
+            data: [],
+            totalSize: 0,
+            selected: [],
+            showMsg: false
         }
     }
 
     componentDidMount() {
-        this.props.fetchTasks(this.state.pageSize, 0);
+        this.props.fetchTasks(this.props.viewType, this.state.sizePerPage, 0);
     }
 
-    handleChangePage = (event, page) => {
-        this.props.fetchTasks(this.state.pageSize, page);
-    };
+    handleTableChange = (type, {page, sizePerPage}) => {
+        this.props.fetchTasks(this.props.viewType, this.state.sizePerPage, page);
+    }
 
     handleChangeRowsPerPage = (event) => {
         let size = parseInt(event.target.value, 10);
         this.setState({
             pageSize: size
         })
-        this.props.fetchTasks(size, 0);
+        this.props.fetchTasks(this.props.viewType, size, 0);
     }
 
-    deleteRecord = (event) => {
-        console.log(this.state.checkedRows)
-        this.props.deleteTasks(this.state.checkedRows);
-    }
-
-    checkRecord = (id, isChecked) => {
-        console.log(id, isChecked)
-        if (isChecked) {
-            this.setState(prevState => ({
-                checkedRows: [...prevState.checkedRows, id]
-            }));
+    deleteRecord = () => {
+        this.handleShowMsg();
+        console.log(this.state.selected.length)
+        if (this.state.selected.length > 0) {
+            this.props.deleteTasks(this.state.selected, this.props.viewType, this.state.sizePerPage, 0);
         } else {
-            this.setState({
-                checkedRows: this.state.checkedRows.filter(function (prevId) {
-                    return prevId !== id
-                })
-            });
+            console.log("nothing is checked")
         }
     }
 
+    handleOnSelect = (row, isSelect) => {
+        if (isSelect) {
+            this.setState(() => ({
+                selected: [...this.state.selected, row.id]
+            }));
+        } else {
+            this.setState(() => ({
+                selected: this.state.selected.filter(x => x !== row.id)
+            }));
+        }
+    }
+
+    handleOnSelectAll = (isSelect, rows) => {
+        const ids = rows.map(r => r.id);
+        if (isSelect) {
+            this.setState(() => ({
+                selected: ids
+            }));
+        } else {
+            this.setState(() => ({
+                selected: []
+            }));
+        }
+    }
+
+    handleCloseMsg = () => {
+        this.setState({
+            showMsg: false,
+            selected: []
+        });
+    }
+
+    handleShowMsg = () => {
+        this.setState({showMsg: true});
+    }
+
     render() {
-        //console.log('view prop', this.props)
         let message = '';
-        if (this.props.message) {
+        //console.log('view prop', this.props.message)
+        if (this.props.message && this.state.showMsg) {
             if (this.props.message.type === 'ERROR' || this.props.message.type === 'HARD_ERROR') {
-                message = <Alert
-                    severity="error"
-                    style={{marginTop: 15, marginRight: 300}}>{this.props.message.title}
-                </Alert>
-            } else if (this.props.message.type === 'INFO' && this.state.showInfo) {
-                setTimeout(function () {
-                    this.setState({showInfo: false});
-                }.bind(this), 2000);
-                if (this.props.message.title === 'SUCCESS') {
-                    message = (<Alert severity="success" style={{marginTop: 15}}> {this.props.message.title} </Alert>);
-                } else {
-                    message = (<Alert severity="warning" style={{marginTop: 15}}>{this.props.message.title}</Alert>);
-                }
+                message = <ErrorMessagebox closeHandler={this.handleCloseMsg} message={this.props.message}/>
+            } else if (this.props.message.type === 'INFO') {
+                message = <InfoMessagebox closeHandler={this.handleCloseMsg} message={this.props.message}/>
             }
         }
         if (this.props.viewpage.type === '') {
@@ -129,6 +175,18 @@ class TaskView extends React.Component {
         if (!rows) {
             return (<Alert>Loading ...</Alert>);
         }
+
+        const selectRow = {
+            mode: 'checkbox',
+            clickToSelect: true,
+            selected: this.state.selected,
+            onSelect: this.handleOnSelect,
+            onSelectAll: this.handleOnSelectAll
+        };
+        let page = view.page;
+        let sizePerPage = view.pageSize;
+        let totalSize = view.count;
+
         return (
             <Container fluid>
                 <Row>
@@ -136,8 +194,8 @@ class TaskView extends React.Component {
                         {message}
                     </Col>
                 </Row>
-                <Row>
-                    <Col className="my-2">
+                <Row className="mt-2">
+                    <Col>
                         <ButtonGroup>
                             <Button
                                 variant="outline-success"
@@ -146,76 +204,64 @@ class TaskView extends React.Component {
                                 Create
                             </Button>
                             <Button
-                                disabled
                                 variant="outline-danger"
                                 onClick={this.deleteRecord}>
                                 Delete
                             </Button>
                         </ButtonGroup>
                     </Col>
-                </Row>
-
-                <Row>
                     <Col>
-                        <BootstrapTable
-                            keyField='id'
-                            data={rows}
-                            columns={columns}
-                            selectRow={selectRow}
-                            cellEdit={cellEditFactory({mode: 'click'})}
-                            pagination={paginationFactory()}
-                        />
+                        <h4 className="font-weight-bold">{this.props.viewpage.pageName}</h4>
                     </Col>
                 </Row>
+                <PaginationProvider
+                    pagination={paginationFactory({
+                        custom: true,
+                        page,
+                        sizePerPage,
+                        totalSize
+                    })
+                    }
+                >
+                    {
+                        ({paginationProps, paginationTableProps}) => (
+                            <div>
+                                <Row className="mt-3">
+                                    <Col>
+                                        <PaginationListStandalone
+                                            {...paginationProps}
+                                        />
+                                    </Col>
+                                    <Col className="text-right">
+                                        <small>{paginationProps.page}-{paginationProps.sizePerPage} of {view.count}</small>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col>
+                                        <BootstrapTable
+                                            remote
+                                            keyField="id"
+                                            data={rows}
+                                            columns={columns}
+                                            selectRow={selectRow}
+                                            cellEdit={cellEditFactory({mode: 'click'})}
+                                            onTableChange={this.handleTableChange}
+                                            noDataIndication="No data"
+                                            bootstrap4="true"
+                                            loading={ false }
+                                            overlay={ overlayFactory({ spinner: true, background: 'rgba(192,192,192,0.3)' }) }
+                                            {...paginationTableProps}
+                                        />
+                                    </Col>
+                                </Row>
+                            </div>
+                        )
+                    }
+                </PaginationProvider>
             </Container>
         )
     }
 }
-
-
-
-class TaskTableRow extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.priorities = [];
-        this.priorities[0] = {title: "UNKNOWN", code: 0};
-        this.priorities[11] = {title: "LOW", code: 11};
-        this.priorities[12] = {title: "MIDDLE", code: 12};
-        this.priorities[13] = {title: "HIGH", code: 13};
-        this.priorities[14] = {title: "URGENT", code: 14};
-
-        this.statuses = [];
-        this.statuses[0] = <Badge label="unknown"/>;
-        this.statuses[1] = <Badge style={{backgroundColor: "#a1a199", width: 80}}>draft</Badge>;
-        this.statuses[2] = <Badge style={{backgroundColor: "#96bf8c", width: 80}}>in progress</Badge>;
-        this.statuses[3] = <Badge style={{backgroundColor: "#9eb7de", width: 80}}>done</Badge>;
-        this.statuses[4] = <Badge style={{backgroundColor: "#e8e15c", width: 80}}>suspend</Badge>;
-    }
-
-
-    handleCheck = (event, isInputChecked) => {
-        this.props.checker(event.target.value, isInputChecked);
-    };
-
-    render() {
-        return (
-            <tr>
-                <td>
-                    <FormCheck value={this.props.tableRow.id} onChange={this.handleCheck}/>
-                    {/*<div className="form-check"
-                         onChange={this.handleCheck}>
-                    </div>*/}
-                </td>
-                <td><Link style={{color: '#000000'}}
-                          to={"/document/" + this.props.tableRow.id}>{this.props.tableRow.title}</Link></td>
-                <td>{this.priorities[this.props.tableRow.priorityCode].title}</td>
-                <td>{this.statuses[this.props.tableRow.statusCode]}</td>
-                <td>{this.props.tableRow.deadline}</td>
-            </tr>)
-    }
-}
-
 
 TaskView.propTypes = {
     fetchTasks: PropTypes.func.isRequired,

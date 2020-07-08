@@ -117,6 +117,8 @@ const mapStateToProps = state => ({
     acl: {
         authorName: state.taskReducer.payloads.task.authorName,
         regDate: state.taskReducer.payloads.task.regDate,
+        lastModifiedDate: state.taskReducer.payloads.task.lastModifiedDate,
+        lastModifierName: state.taskReducer.payloads.task.lastModifierName,
         rlsEntries: state.taskReducer.payloads.task.acl
     }
 });

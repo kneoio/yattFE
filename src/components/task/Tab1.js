@@ -39,7 +39,7 @@ export const Tab1 = (props) => {
     });
 
     const handleSubmit = (values, actions) => {
-        alert(JSON.stringify(values, null, 2));
+        //alert(JSON.stringify(values, null, 2));
         let id = values.id;
         if (id === "new") {
             id = null;
@@ -53,7 +53,7 @@ export const Tab1 = (props) => {
             statusCode: values.statusCode,
             typeCode: values.typeCode
         });
-        //this.cancelForm();
+        window.location.replace('/view/tasks');
     }
 
     return (<div index={1}>

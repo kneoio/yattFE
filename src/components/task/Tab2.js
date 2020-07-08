@@ -31,7 +31,15 @@ export const Tab2 = (props) => {
                     Last modification
                 </Col>
                 <Col>
-                    lm
+                    {props.acl.lastModifiedDate}
+                </Col>
+            </Row>
+            <Row className="mt-2">
+                <Col sm={2} className="text-right">
+                    Last modifier
+                </Col>
+                <Col>
+                    {props.acl.lastModifierName}
                 </Col>
             </Row>
             <Row className="mt-4">
