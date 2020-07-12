@@ -31,7 +31,7 @@ export const TaskForm = (props) => {
                 </Col>
             </Row>
             <Row>
-                <Col style={{backgroundColor: "#eee8e8", width: 100}}>
+                <Col style={{backgroundColor: "#dedcdc", padding: 6}}>
                     {props.pageName}
                 </Col>
             </Row>

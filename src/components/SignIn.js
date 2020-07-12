@@ -11,6 +11,9 @@ import {useFormik} from "formik";
 import Alert from "react-bootstrap/Alert";
 
 const SignIn = props => {
+
+    const [showMsg, setShowMsg] = useState(true);
+
     const formik = useFormik({
         initialValues: {
             user: "",
@@ -26,7 +29,7 @@ const SignIn = props => {
 
     return (
         <Container>
-            <Row style={{height: 100}}>
+            <Row style={{height: 30}}>
             </Row>
             <Form onSubmit={formik.handleSubmit}>
                 <Row className="justify-content-center">
@@ -60,7 +63,7 @@ const SignIn = props => {
                     </Col>
                 </Row>
             </Form>
-            <Row className="justify-content-center align-items-center" style={{height: 300}}>
+            <Row className="justify-content-center align-items-center" style={{height: 200}}>
                 <Col className="col-md-4 text-center">
                     <img
                         src={`${process.env.PUBLIC_URL}/images/juka_logo.png`}
@@ -69,10 +72,13 @@ const SignIn = props => {
             </Row>
             <Row className="justify-content-center">
                 <Col className="col-md-4">
-                    {messageType === 'LOGIN_FILE' &&  <Alert variant="danger">
-                        <Alert.Heading>Error!</Alert.Heading>props.security.title</Alert> }
+                    {messageType === 'LOGIN_FAIL' && <Alert variant="danger">
+                        <Alert.Heading>Error!</Alert.Heading>{props.security.title}</Alert>}
                 </Col>
             </Row>
+            <div className="footer">
+                <p>{process.env.REACT_APP_JUKA_VERSION}</p>
+            </div>
         </Container>
     )
 

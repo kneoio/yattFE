@@ -15,3 +15,13 @@
 .error {
   color: #f10a0a;
 }
+
+.footer {
+  font-size: small;
+  position: fixed;
+  margin-left: 5px;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  color: #131111;
+}

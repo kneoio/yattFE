@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import {connect} from "react-redux";
 import {Link} from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
-import {Badge, Row} from "react-bootstrap";
+import {Row} from "react-bootstrap";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
@@ -15,21 +15,6 @@ import paginationFactory, {PaginationListStandalone, PaginationProvider} from 'r
 import InfoMessagebox from "../InfoMessagebox";
 import ErrorMessagebox from "../ErrorMessagebox";
 
-const statuses = [];
-statuses[0] = <Badge>UNKNOWN</Badge>;
-statuses[1] = <Badge style={{backgroundColor: "#a1a199", width: 95}}>DRAFT</Badge>;
-statuses[2] = <Badge style={{backgroundColor: "#96bf8c", width: 95}}>IN PROGRESS</Badge>;
-statuses[3] = <Badge style={{backgroundColor: "#9eb7de", width: 95}}>DONE</Badge>;
-statuses[4] = <Badge style={{backgroundColor: "#e8e15c", width: 95}}>SUSPEND</Badge>;
-
-
-const priorities = [];
-priorities[0] = "UNKNOWN";
-priorities[11] = "LOW";
-priorities[12] = "MIDDLE";
-priorities[13] = "HIGH";
-priorities[14] = "URGENT";
-
 
 function linkFormatter(cell, row) {
     return (
@@ -37,48 +22,33 @@ function linkFormatter(cell, row) {
     );
 }
 
-function statusCellFormatter(cell, row) {
+function roleCellFormatter(cell, row) {
     return (
-        statuses[row.statusCode]
+        row.roles
     );
 }
-
-function priorityCellFormatter(cell, row) {
-    return (
-        priorities[row.priorityCode]
-    );
-}
-
 
 const columns = [
     {
-        dataField: 'description',
-        text: 'Description',
+        dataField: 'login',
+        text: 'Login',
         formatter: linkFormatter,
         editable: false
-    }, {
-        dataField: 'priorityCode',
-        text: 'Priority',
+    },
+    {
+        dataField: 'email',
+        text: 'E-mail',
+        editable: false
+    },
+    {
+        dataField: 'roles',
+        text: 'Roles',
         editable: false,
-        formatter: priorityCellFormatter
-    }, {
-        dataField: 'statusCode',
-        text: 'Status',
-        editable: false,
-        formatter: statusCellFormatter,
-        style: {
-            width: 100
-        }
-    }
-    , {
-        dataField: 'deadline',
-        text: 'Deadline',
-        editable: false,
-        type: 'date'
+        formatter: roleCellFormatter
     }];
 
 
-class TaskView extends React.Component {
+class UserView extends React.Component {
 
     constructor(props) {
         super(props);
@@ -93,18 +63,18 @@ class TaskView extends React.Component {
     }
 
     componentDidMount() {
-        this.props.fetchTasks(this.props.viewType, this.state.sizePerPage, 0);
+        this.props.fetchTasks("users", this.state.sizePerPage, 0);
     }
 
     handleTableChange = (type, {page, sizePerPage}) => {
-        this.props.fetchTasks(this.props.viewType, this.state.sizePerPage, page);
+        this.props.fetchTasks("users", this.state.sizePerPage, page);
     }
 
     deleteRecord = () => {
         this.handleShowMsg();
         console.log(this.state.selected.length)
         if (this.state.selected.length > 0) {
-            this.props.deleteTasks(this.state.selected, this.props.viewType, this.state.sizePerPage, 0);
+            this.props.deleteTasks(this.state.selected, "users", this.state.sizePerPage, 0);
         } else {
             console.log("nothing is checked")
         }
@@ -202,7 +172,7 @@ class TaskView extends React.Component {
                         </ButtonGroup>
                     </Col>
                     <Col>
-                        <h4 className="font-weight-bold">{this.props.viewpage.pageName}</h4>
+                        <h4 className="font-weight-bold">Users</h4>
                     </Col>
                 </Row>
                 <PaginationProvider
@@ -251,7 +221,7 @@ class TaskView extends React.Component {
     }
 }
 
-TaskView.propTypes = {
+UserView.propTypes = {
     fetchTasks: PropTypes.func.isRequired,
     deleteTasks: PropTypes.func.isRequired
 };
@@ -262,7 +232,7 @@ const mapStateToProps = state => ({
 });
 
 
-export default connect(mapStateToProps, {fetchTasks, deleteTasks})(TaskView);
+export default connect(mapStateToProps, {fetchTasks, deleteTasks})(UserView);
 
 
 

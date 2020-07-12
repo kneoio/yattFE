@@ -7,16 +7,26 @@ import TaskView from "./task/TaskView";
 import TaskDocument from "./task/TaskDocument";
 import {Profile} from "./Profile";
 import UserView from "./user/UserView";
+import Container from "react-bootstrap/Container";
+import {Row} from "react-bootstrap";
+import Col from "react-bootstrap/Col";
+import Button from "react-bootstrap/Button";
+import {Link} from "react-router-dom";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
 
 
-export const Outline = (props) => {
+export const Dashboard = (props) => {
     let jwtDecode = require('jwt-decode');
     let decoded = jwtDecode(sessionStorage.getItem("jwtToken"));
     const [userName] = React.useState(decoded.sub);
 
-    const logout = event => {
+    const logout = () => {
         sessionStorage.removeItem("jwtToken");
         window.location.replace('/sign_in');
+    }
+
+    const populateTestData = () => {
+
     }
 
     return (
@@ -26,7 +36,6 @@ export const Outline = (props) => {
                 <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="mr-auto">
-                        <Nav.Link href="/dashboard">Dashboard</Nav.Link>
                         <NavDropdown title="Views" id="collasible-nav-dropdown">
                             <NavDropdown.Item href="/view/tasks">Tasks</NavDropdown.Item>
                             <NavDropdown.Item href="/view/my_tasks">My tasks</NavDropdown.Item>
@@ -42,13 +51,39 @@ export const Outline = (props) => {
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>
-            {props.match.path === "/view/:viewName" && (props.match.params.viewName === "tasks" || props.match.params.viewName === "may_tasks") && <TaskView viewType = {props.match.params.viewName}/>}
-            {props.match.path === "/view/:viewName" && props.match.params.viewName === "users" && <UserView/>}
-            {props.match.path === "/document/:id" && <TaskDocument id={props.match.params.id}/>}
-            {props.match.path === "/profile" && <Profile/>}
+            <Container fluid>
+                <Row>
+                    <Col className="mt-3 mb-2">
+                      It will be statistics here
+                    </Col>
+                </Row>
+                <Row>
+                    <Col className="mt-3 mb-2">
+                        <ButtonGroup>
+                            <Button
+                                variant="outline-success"
+                                as={Link}
+                                to={"/document/new"}>
+                                Revoke access
+                            </Button>
+                        </ButtonGroup>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col className="mt-3 mb-2">
+                        <ButtonGroup>
+                            <Button
+                                variant="outline-danger"
+                                onClick={populateTestData}>
+                                Populate test data
+                            </Button>
+                        </ButtonGroup>
+                    </Col>
+                </Row>
+            </Container>
         </div>
     );
 }
 
-export default Outline;
+export default Dashboard;
 

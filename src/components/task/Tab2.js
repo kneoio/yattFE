@@ -7,7 +7,7 @@ import * as React from "react";
 
 
 export const Tab2 = (props) => {
-    console.log("acl", props.acl)
+    //console.log("acl", props.acl)
     return (<div index={2}>
         <Container fluid>
             <Row className="mt-4">

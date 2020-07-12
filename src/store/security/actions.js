@@ -3,9 +3,11 @@ import axios from 'axios';
 export const LOGIN = "LOGIN";
 
 export const login = (login, password) => dispatch => {
-    let URL = process.env.REACT_APP_REST_HOST + '/do_login';
-    console.log('log-in request > ' + URL)
-    axios.get(URL + "?usr=" + login + "&pwd=" + password)
+    const formData = new FormData();
+    formData.append("username", login);
+    formData.append("password", password);
+    let URL = process.env.REACT_APP_REST_HOST + '/login';
+    axios.post(URL, formData)
         .then(response => {
             sessionStorage.setItem("jwtToken", response.headers.authorization);
             dispatch({
