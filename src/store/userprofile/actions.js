@@ -1,5 +1,4 @@
 import axios from 'axios';
-import React from "react";
 
 export const GET_PROFILE = "GET_PROFILE";
 

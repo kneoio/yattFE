@@ -15,7 +15,6 @@ export const getProfile  = (state = defaultState, action) => {
                 ...state,
                 serverPage: action.payload,
             }
-            break;
         }
         default:
             return state;

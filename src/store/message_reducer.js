@@ -25,7 +25,6 @@ export const messageReducer = (state = defaultState, action) => {
                 title: action.message.title,
                 payloads: action.message.payloads
             }
-            break;
         }
         case INFO: {
             return {
@@ -35,7 +34,6 @@ export const messageReducer = (state = defaultState, action) => {
                 title: action.message.title,
                 payloads: action.message.payloads
             }
-            break;
         }
         case SERVER_ERROR: {
             return {
@@ -45,14 +43,12 @@ export const messageReducer = (state = defaultState, action) => {
                 title: action.message.title,
                 payloads: action.message.payloads
             }
-            break;
         }
         case SAVE_TASK_RESULT: {
             return {
                 type: INFO,
                 title: "task saved"
             }
-            break;
         }
         default:
             return state;

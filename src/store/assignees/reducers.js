@@ -24,7 +24,7 @@ export const assigneeReducer  = (state = defaultState, action) => {
                 ...state,
                 serverPage: action.serverPage,
             }
-            break;
+
         }
         default:
             return state;

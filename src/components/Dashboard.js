@@ -3,10 +3,6 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import "./../App.css"
-import TaskView from "./task/TaskView";
-import TaskDocument from "./task/TaskDocument";
-import {Profile} from "./Profile";
-import UserView from "./user/UserView";
 import Container from "react-bootstrap/Container";
 import {Row} from "react-bootstrap";
 import Col from "react-bootstrap/Col";

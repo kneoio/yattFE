@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
 import {login} from "../store/security/actions";
@@ -11,8 +11,6 @@ import {useFormik} from "formik";
 import Alert from "react-bootstrap/Alert";
 
 const SignIn = props => {
-
-    const [showMsg, setShowMsg] = useState(true);
 
     const formik = useFormik({
         initialValues: {

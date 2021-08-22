@@ -40,7 +40,6 @@ export const taskReducer = (state = taskDefaultState, action) => {
                     actions: action.serverPage.payloads.actions,
                 }
             }
-            break;
         }
         case UPDATE_TASK: {
             return {
@@ -53,7 +52,6 @@ export const taskReducer = (state = taskDefaultState, action) => {
                     actions: action.serverPage.payloads.actions,
                 }
             }
-            break;
         }
         default:
             return state;

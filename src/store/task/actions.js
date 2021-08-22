@@ -1,5 +1,4 @@
 import axios from 'axios';
-import React from "react";
 import {SERVER_ERROR, VALIDATION_ERROR} from "../global_actions";
 export const GET_TASK = "GET_TASK";
 export const UPDATE_TASK = "UPDATE_TASK";

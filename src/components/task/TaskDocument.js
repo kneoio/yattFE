@@ -26,9 +26,6 @@ class TaskDocument extends React.Component {
         }
     }
 
-    constructor(props) {
-        super(props);
-    }
 
     componentDidMount() {
         this.props.fetchTask(this.props.match.params.id);
