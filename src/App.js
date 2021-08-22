@@ -25,8 +25,7 @@ function App() {
                         <Route path="/view/:viewName" exact component={Outline}/>
                         <Route path="/document/:id" exact component={Outline}/>
                         <Route path="/about" exact component={AboutPage}/>
-                        <Route path="/profile" exact component={Outline}/>
-                        <Route path="/sign_in" exact component={SignIn}/>
+                        ¡<Route path="/sign_in" exact component={SignIn}/>
                         <Route path="/error/:message" exact component={Error}/>
                         <Route path="/:anypage" component={Error}/>
                     </Switch>
