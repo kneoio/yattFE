@@ -19,7 +19,7 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run build
-    - run: npm run test --if-present
+    #- run: npm run test --if-present
     - run: pwd    
     - run: ls
 
