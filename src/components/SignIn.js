@@ -9,6 +9,8 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import {useFormik} from "formik";
 import Alert from "react-bootstrap/Alert";
+import Nav from "react-bootstrap/Nav";
+import axios from "axios";
 
 const SignIn = props => {
 
@@ -24,6 +26,30 @@ const SignIn = props => {
 
     const messageType = props.security.type;
 
+    const updateLang = (lang) => {
+        const connectSession = axios.create({
+            withCredentials: false,
+            headers: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json'
+            }
+        });
+        let URL = process.env.REACT_APP_REST_HOST + '/home/' + lang;
+        connectSession.get(URL)
+            .then(response => {
+                let data = response.data;
+                this.setState({
+                    lang: data.lang,
+                    name: data.name,
+                    motto: data.motto,
+                    subMotto: data.subMotto,
+                    menuHome: data.menuHome,
+                    menuTasks: data.menuTasks
+                });
+            }).catch(error => {
+            console.log('update lang', error);
+        });
+    }
 
     return (
         <Container>
@@ -77,7 +103,25 @@ const SignIn = props => {
             <div className="footer">
                 <p>{process.env.REACT_APP_JUKA_VERSION}</p>
             </div>
+            <footer className="mt-auto">
+                <div index={1}>
+                    <Container fluid>
+                        <Nav activeKey="/home">
+                            <Nav.Item>
+                                {<Nav.Link onClick={() => updateLang('en')}>en</Nav.Link>}
+                            </Nav.Item>
+                            <Nav.Item>
+                                {<Nav.Link onClick={() => updateLang('ru')}>ru</Nav.Link>}
+                            </Nav.Item>
+                            <Nav.Item>
+                                {<Nav.Link onClick={() => updateLang('pt')}>pt</Nav.Link>}
+                            </Nav.Item>
+                        </Nav>
+                    </Container>
+                </div>
+            </footer>
         </Container>
+
     )
 
 }

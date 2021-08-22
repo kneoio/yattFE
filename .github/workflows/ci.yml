@@ -23,6 +23,16 @@ jobs:
     - run: pwd    
     - run: ls
 
+    - name: stop web-server
+      uses: garygrossgarten/github-action-ssh@release
+      with:
+        command: systemctl stop yattFE.service
+        host: ${{ secrets.REMOTE_HOST }}
+        port: ${{ secrets.REMOTE_PORT }}
+        username: ${{ secrets.REMOTE_USER }}
+        passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}
+        privateKey: ${{ secrets.SSH_KEY}}
+
     - name: Copying files to server
       uses: appleboy/scp-action@master
       with:
@@ -35,10 +45,10 @@ jobs:
         source: "build/"
         target: "${{ secrets.REMOTE_DIR }}"
         
-    - name: restart web-server
+    - name: start web-server
       uses: garygrossgarten/github-action-ssh@release
       with:
-       command: systemctl restart yattFE.service
+       command: systemctl start yattFE.service
        host: ${{ secrets.REMOTE_HOST }}
        port: ${{ secrets.REMOTE_PORT }}
        username: ${{ secrets.REMOTE_USER }}
